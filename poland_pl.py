@@ -5,9 +5,6 @@ from utils.reception import Reception
 from utils.constants import POLAND_PL_URL, HEADERS, OUTPUT_DIR
 from utils.utils import write_to_json, normalize
 
-HEADERS = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0'}
-POLAND_URL = 'https://www.gov.pl/web/udsc/ukraina2'
-
 """Runs the scraping logic."""
 def scrape_poland_pl():
   content = get_website_content()
@@ -18,7 +15,7 @@ def scrape_poland_pl():
 
 """Gets the website content with BS4."""
 def get_website_content():
-  website = requests.get(POLAND_URL, headers=HEADERS)
+  website = requests.get(POLAND_PL_URL, headers=HEADERS)
   return BeautifulSoup(website.content, 'html.parser')
 
 
