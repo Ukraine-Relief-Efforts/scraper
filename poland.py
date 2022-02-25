@@ -1,11 +1,17 @@
+import json
 import requests
+import unicodedata
 from bs4 import BeautifulSoup
+
+HEADERS = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0'}
+POLAND_URL = 'https://www.gov.pl/web/udsc/ukraina2'
 
 class Reception:
   def __init__(self):
     self._location = ""
     self._qr_url = ""
     self._gmaps = ""
+    
   def __str__(self):
     nl='\n'
     return f"Location: {self._location}{nl} QR: {self.qr_url}{nl} GMaps:{self._gmaps}{nl}===="
@@ -30,34 +36,41 @@ class Reception:
   def gmaps(self):
     return self._gmaps
 
-  @qr_url.setter
-  def gmaps(self, qr):
-    self._gmaps = qr
+  @gmaps.setter
+  def gmaps(self, gmaps):
+    self._gmaps = gmaps
 
-    
 
-def get_core(r):
-  soup = BeautifulSoup(r.content, 'html.parser')
-  item = soup.find('div', class_="editor-content").findAll('li')
+"""Runs the scraping logic."""
+def scrape():
+  content = get_website_content()
+  core = get_core(content)
+  reception_arr = get_reception_points(content)
+  write_to_json(core, reception_arr)
+
+
+"""Normalizes the provided text. This is needed to get rid of weird entries like \xa0."""
+def normalize(text):
+  return unicodedata.normalize("NFKD", text)
+
+
+"""Gets the website content with BS4."""
+def get_website_content():
+  website = requests.get(POLAND_URL, headers=HEADERS)
+  return BeautifulSoup(website.content, 'html.parser')
+
+
+"""Gets the content from a bullet points list of general information for Ukrainian citizens."""
+def get_core(content):
+  items = content.find('div', class_="editor-content").findAll('li')
   text_arr = []
-  for i in item:
-    text_arr.append(i.get_text(strip=True, separator=' '))
+  for item in items:
+    text_arr.append(normalize(item.get_text(strip=True, separator=' ')))
   return text_arr
 
-def fetch_site():
-  headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0'}
-  r = requests.get('https://www.gov.pl/web/udsc/ukraina2', headers=headers)
-  text_arr = get_core(r)
-  print(text_arr)
-  reception_arr = fetch_reception_points(r)
-  for i in reception_arr:
-    print(i)
 
-def write_to_json():
-  pass
-
-def fetch_reception_points(r):
-  soup = BeautifulSoup(r.content, 'html.parser')
+"""Gets the list of reception points."""
+def get_reception_points(soup):
   item = soup.find('div', class_="editor-content").findAll('p')
   item = item[1:]
   
@@ -79,7 +92,7 @@ def fetch_reception_points(r):
   """
   special_case = item[0]
   r = Reception()
-  r.location = special_case.get_text(strip=True, separator=' ')
+  r.location = normalize(special_case.get_text(strip=True, separator=' '))
   gmaps = special_case.find('a', href=True)
   
   if gmaps:
@@ -95,7 +108,7 @@ def fetch_reception_points(r):
   for i in item:
     if count %2 == 0:
       r = Reception()
-      r.location = i.get_text(strip=True, separator=' ')
+      r.location = normalize(i.get_text(strip=True, separator=' '))
       gmaps = i.find('a', href=True)
       if gmaps:
         r.gmaps = gmaps['href']
@@ -108,5 +121,22 @@ def fetch_reception_points(r):
       
     count += 1
   return recep_arr
-  
-fetch_site()
+
+
+def write_to_json(core, reception_arr):
+  reception = []
+  for rec in reception_arr:
+    reception.append({
+      "qr": rec.qr_url,
+      "gmaps": rec.gmaps,
+      "address": rec.location,
+    })
+    
+  data = {'general': core, 'reception': reception}
+  print(data)
+
+  with open('poland.json', 'w', encoding='utf-8') as f:
+    json.dump(data, f, indent=2, ensure_ascii=False)
+
+
+scrape()
