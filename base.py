@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+from os import path
 
 class Reception:
   def __init__(self):
@@ -34,8 +35,6 @@ class Reception:
   def gmaps(self, qr):
     self._gmaps = qr
 
-    
-
 def get_core(r):
   soup = BeautifulSoup(r.content, 'html.parser')
   item = soup.find('div', class_="editor-content").findAll('li')
@@ -45,7 +44,37 @@ def get_core(r):
   return text_arr
 
 def fetch_site():
-  headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0'}
+  xml_settings_file = 'settings.xml'
+
+  #
+  # Check whether file exists on the system or not and whether it's a file or a directory.
+  #
+  if not path.exists(xml_settings_file) or not path.isfile(xml_settings_file):
+    return "The file doesn't exist on the system."
+
+  #
+  # Retrieve data from XML file and place it inside of a variable
+  #
+  with open(xml_settings_file, 'r') as file:
+    data = file.read()
+  
+  #
+  # Passing the stored data inside the BeautifulSoup parser, storing the returned object.
+  #
+  xml_data = BeautifulSoup(data, 'xml')
+  headers = {}
+
+  #
+  # Iterate through the recieved data.
+  #
+  for index in xml_data.find_all('header'):
+    headers[index['name']] = index.text
+
+  #
+  # Print the contents of dictionary object.
+  #
+  print(headers)
+
   r = requests.get('https://www.gov.pl/web/udsc/ukraina2', headers=headers)
   text_arr = get_core(r)
   print(text_arr)
