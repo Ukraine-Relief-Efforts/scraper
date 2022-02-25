@@ -61,7 +61,7 @@ def get_reception_points(soup):
     r.gmaps = gmaps['href']
   img = special_case.find('img', src=True)
   if img:
-    r.qr_url = img['src']
+    r.qr = img['src']
   recep_arr.append(r)
   item.pop(0)
   # TODO: Remove the entire above block if and when they fix the formatting on the site.
@@ -79,7 +79,7 @@ def get_reception_points(soup):
       # Get from the end of array,
       img = i.find('img', src=True)
       if img:
-        recep_arr[-1].qr_url = img['src']
+        recep_arr[-1].qr = img['src']
       
     count += 1
   return recep_arr
