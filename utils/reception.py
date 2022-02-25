@@ -1,12 +1,12 @@
 class Reception:
   def __init__(self):
     self._location = ""
-    self._qr_url = ""
+    self._qr = ""
     self._gmaps = ""
-
+    
   def __str__(self):
     nl='\n'
-    return f"Location: {self._location}{nl} QR: {self.qr_url}{nl} GMaps:{self._gmaps}{nl}===="
+    return f"Location: {self._location}{nl} QR: {self.qr}{nl} GMaps:{self._gmaps}{nl}===="
   
   @property
   def location(self):
@@ -17,17 +17,17 @@ class Reception:
     self._location = loc
   
   @property
-  def qr_url(self):
-    return self._qr_url
+  def qr(self):
+    return self._qr
 
-  @qr_url.setter
-  def qr_url(self, qr):
-    self._qr_url = qr
+  @qr.setter
+  def qr(self, qr):
+    self._qr = qr
     
   @property
   def gmaps(self):
     return self._gmaps
 
   @gmaps.setter
-  def gmaps(self, qr):
-    self._gmaps = qr
+  def gmaps(self, gmaps):
+    self._gmaps = gmaps

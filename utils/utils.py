@@ -11,7 +11,7 @@ def write_to_json(filename, text_arr, reception_arr, source):
   reception = []
   for rec in reception_arr:
     reception.append({
-      "qr": rec.qr_url,
+      "qr": rec.qr,
       "gmaps": rec.gmaps,
       "address": rec.location,
     })
