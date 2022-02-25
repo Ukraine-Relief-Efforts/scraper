@@ -1,68 +1,77 @@
+from fastapi import FastAPI
 import requests
 from bs4 import BeautifulSoup
 
+app = FastAPI()
+
+
 class Reception:
-  def __init__(self):
-    self._location = ""
-    self._qr_url = ""
-    self._gmaps = ""
-  def __str__(self):
-    nl='\n'
-    return f"Location: {self._location}{nl} QR: {self.qr_url}{nl} GMaps:{self._gmaps}{nl}===="
-  
-  @property
-  def location(self):
-    return self._location
+    def __init__(self):
+        self._location = ""
+        self._qr_url = ""
+        self._gmaps = ""
 
-  @location.setter
-  def location(self, loc):
-    self._location = loc
-  
-  @property
-  def qr_url(self):
-    return self._qr_url
+    def __str__(self):
+        nl = '\n'
+        return f"Location: {self._location}{nl} QR: {self.qr_url}{nl} GMaps:{self._gmaps}{nl}===="
 
-  @qr_url.setter
-  def qr_url(self, qr):
-    self._qr_url = qr
-    
-  @property
-  def gmaps(self):
-    return self._gmaps
+    @property
+    def location(self):
+        return self._location
 
-  @qr_url.setter
-  def gmaps(self, qr):
-    self._gmaps = qr
+    @location.setter
+    def location(self, loc):
+        self._location = loc
 
-    
+    @property
+    def qr_url(self):
+        return self._qr_url
+
+    @qr_url.setter
+    def qr_url(self, qr):
+        self._qr_url = qr
+
+    @property
+    def gmaps(self):
+        return self._gmaps
+
+    @qr_url.setter
+    def gmaps(self, qr):
+        self._gmaps = qr
+
 
 def get_core(r):
-  soup = BeautifulSoup(r.content, 'html.parser')
-  item = soup.find('div', class_="editor-content").findAll('li')
-  text_arr = []
-  for i in item:
-    text_arr.append(i.get_text(strip=True, separator=' '))
-  return text_arr
+    soup = BeautifulSoup(r.content, 'html.parser')
+    item = soup.find('div', class_="editor-content").findAll('li')
+    text_arr = []
+    for i in item:
+        text_arr.append(i.get_text(strip=True, separator=' '))
+    return text_arr
+
 
 def fetch_site():
-  headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0'}
-  r = requests.get('https://www.gov.pl/web/udsc/ukraina2', headers=headers)
-  text_arr = get_core(r)
-  print(text_arr)
-  reception_arr = fetch_reception_points(r)
-  for i in reception_arr:
-    print(i)
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0'}
+    r = requests.get('https://www.gov.pl/web/udsc/ukraina2', headers=headers)
+    text_arr = get_core(r)
+    print(text_arr)
+    reception_arr = fetch_reception_points(r)
+    for i in reception_arr:
+        print(i)
+        return i
+
 
 def write_to_json():
-  pass
+    pass
+
 
 def fetch_reception_points(r):
-  soup = BeautifulSoup(r.content, 'html.parser')
-  item = soup.find('div', class_="editor-content").findAll('p')
-  item = item[1:]
-  
-  recep_arr = []
-  """
+    soup = BeautifulSoup(r.content, 'html.parser')
+    item = soup.find('div', class_="editor-content").findAll('p')
+    item = item[1:]
+
+    recep_arr = []
+    """
     First one looks like this
     
     <p><span style="font-size:11pt"><u><span style="font-size:10.5pt"><span style="color:blue"><a href="https://www.google.pl/maps/place/Gminny+Ośrodek+Kultury+i+Turystyki/@51.1653246,23.8026394,17z/data=!3m1!4b1!4m5!3m4!1s0x4723890b09b9cd4d:0x5747c0a6dfbbb992!8m2!3d51.1653213!4d23.8048281"><span style="color:blue">Pałac Suchodolskich Gminny Ośrodek Kultury i Turystyki, ul. Parkowa 5, 22-175 </span><strong>Dorohusk – osiedle</strong></a></span></span></u><br>
@@ -77,36 +86,44 @@ def fetch_reception_points(r):
   Temporarily hardcoding for the first one
     
   """
-  special_case = item[0]
-  r = Reception()
-  r.location = special_case.get_text(strip=True, separator=' ')
-  gmaps = special_case.find('a', href=True)
-  
-  if gmaps:
-    r.gmaps = gmaps['href']
-  img = special_case.find('img', src=True)
-  if img:
-    r.qr_url = img['src']
-  recep_arr.append(r)
-  item.pop(0)
-  # TODO: Remove the entire above block if and when they fix the formatting on the site.
-  
-  count = 0
-  for i in item:
-    if count %2 == 0:
-      r = Reception()
-      r.location = i.get_text(strip=True, separator=' ')
-      gmaps = i.find('a', href=True)
-      if gmaps:
+    special_case = item[0]
+    r = Reception()
+    r.location = special_case.get_text(strip=True, separator=' ')
+    gmaps = special_case.find('a', href=True)
+
+    if gmaps:
         r.gmaps = gmaps['href']
-        recep_arr.append(r)
-    else:
-      # Get from the end of array,
-      img = i.find('img', src=True)
-      if img:
-        recep_arr[-1].qr_url = img['src']
-      
-    count += 1
-  return recep_arr
-  
-fetch_site()
+    img = special_case.find('img', src=True)
+    if img:
+        r.qr_url = img['src']
+    recep_arr.append(r)
+    item.pop(0)
+    # TODO: Remove the entire above block if and when they fix the formatting on the site.
+
+    count = 0
+    for i in item:
+        if count % 2 == 0:
+            r = Reception()
+            r.location = i.get_text(strip=True, separator=' ')
+            gmaps = i.find('a', href=True)
+            if gmaps:
+                r.gmaps = gmaps['href']
+                recep_arr.append(r)
+        else:
+            # Get from the end of array,
+            img = i.find('img', src=True)
+            if img:
+                recep_arr[-1].qr_url = img['src']
+
+        count += 1
+    return recep_arr
+
+
+@app.get("/")
+def root():
+    result = fetch_site()
+    return result
+
+
+if __name__ == "__main__":
+    fetch_site()
