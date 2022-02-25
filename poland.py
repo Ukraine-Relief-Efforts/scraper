@@ -1,6 +1,7 @@
 import json
 import requests
 import unicodedata
+import lxml.etree as etree
 from bs4 import BeautifulSoup
 from os import path
 
@@ -73,31 +74,26 @@ def configure_headers():
   xml_settings_file = 'settings.xml'
 
   #
+  # Container reserved for storing the headers.
+  #
+  headers = {}
+
+  #
   # Check whether file exists on the system or not and whether it's a file or a directory.
   #
   if not path.exists(xml_settings_file) or not path.isfile(xml_settings_file):
     return "The file doesn't exist on the system."
 
   #
-  # Retrieve data from XML file and place it inside of a variable
+  # Iterate through the XML data in chunks.
   #
-  with open(xml_settings_file, 'r') as file:
-    data = file.read()
-  
-  #
-  # Passing the stored data inside the BeautifulSoup parser, storing the returned object.
-  #
-  xml_data = BeautifulSoup(data, 'xml')
-  headers = {}
+  for event, element in etree.iterparse(xml_settings_file, events=('start', 'end')):
+    if element.tag == 'header' and event == 'end':
+      headers[element.attrib.get('name')] = element.text.strip()
+      element.clear()
 
   #
-  # Iterate through the recieved data.
-  #
-  for index in xml_data.find_all('header'):
-    headers[index['name']] = index.text
-
-  #
-  # Print the contents of dictionary object.
+  # Print all the headers contained within a dict.
   #
   print(headers)
 
