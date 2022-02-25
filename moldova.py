@@ -1,20 +1,27 @@
 import os
 from utils.reception import Reception
-from utils.constants import POLAND_PL_URL, OUTPUT_DIR
+from utils.constants import OUTPUT_DIR
 from utils.utils import get_website_content, write_to_json, normalize
 
+MOLDOVA_UKRAINE_URL = "https://www.border.gov.md/ro/ucraina"
+MOLDOVA_MAP_URL = "https://www.border.gov.md/harta-punctelor-de-trecere-ale-frontierei-de-stat"
+
 """Runs the scraping logic."""
-def scrape_poland_pl():
-  content = get_website_content(POLAND_PL_URL)
-  core = get_core(content)
-  reception_arr = get_reception_points(content)
-  path = os.path.join(OUTPUT_DIR, 'poland_pl.json')
-  write_to_json(path, core, reception_arr, POLAND_PL_URL)
+def scrape_moldova():
+  print("Scraping Moldova")
+  # Start with general border info
+  content = get_website_content(MOLDOVA_UKRAINE_URL)
+  core = get_general(content)
 
+  # Get map
+  reception_arr = []; #get_reception_points(content)
+  path = os.path.join(OUTPUT_DIR, 'moldova.json')
+  write_to_json(path, core, reception_arr, MOLDOVA_UKRAINE_URL)
 
-"""Gets the content from a bullet points list of general information for Ukrainian citizens."""
-def get_core(content):
-  items = content.find('div', class_="editor-content").findAll('li')
+"""Gets general border crossing information."""
+def get_general(content):
+  print(content)
+  items = content.find('div', class_="col-lg-10 offset-lg-1").findAll('font')
   text_arr = []
   for item in items:
     text_arr.append(normalize(item.get_text(strip=True, separator=' ')))
