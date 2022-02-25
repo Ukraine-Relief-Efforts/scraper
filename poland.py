@@ -9,12 +9,12 @@ POLAND_URL = 'https://www.gov.pl/web/udsc/ukraina2'
 class Reception:
   def __init__(self):
     self._location = ""
-    self._qr_url = ""
+    self._qr = ""
     self._gmaps = ""
     
   def __str__(self):
     nl='\n'
-    return f"Location: {self._location}{nl} QR: {self.qr_url}{nl} GMaps:{self._gmaps}{nl}===="
+    return f"Location: {self._location}{nl} QR: {self.qr}{nl} GMaps:{self._gmaps}{nl}===="
   
   @property
   def location(self):
@@ -25,12 +25,12 @@ class Reception:
     self._location = loc
   
   @property
-  def qr_url(self):
-    return self._qr_url
+  def qr(self):
+    return self._qr
 
-  @qr_url.setter
-  def qr_url(self, qr):
-    self._qr_url = qr
+  @qr.setter
+  def qr(self, qr):
+    self._qr = qr
     
   @property
   def gmaps(self):
@@ -99,7 +99,7 @@ def get_reception_points(soup):
     r.gmaps = gmaps['href']
   img = special_case.find('img', src=True)
   if img:
-    r.qr_url = img['src']
+    r.qr = img['src']
   recep_arr.append(r)
   item.pop(0)
   # TODO: Remove the entire above block if and when they fix the formatting on the site.
@@ -117,7 +117,7 @@ def get_reception_points(soup):
       # Get from the end of array,
       img = i.find('img', src=True)
       if img:
-        recep_arr[-1].qr_url = img['src']
+        recep_arr[-1].qr = img['src']
       
     count += 1
   return recep_arr
@@ -127,13 +127,12 @@ def write_to_json(core, reception_arr):
   reception = []
   for rec in reception_arr:
     reception.append({
-      "qr": rec.qr_url,
+      "qr": rec.qr,
       "gmaps": rec.gmaps,
       "address": rec.location,
     })
     
   data = {'general': core, 'reception': reception}
-  print(data)
 
   with open('poland.json', 'w', encoding='utf-8') as f:
     json.dump(data, f, indent=2, ensure_ascii=False)
