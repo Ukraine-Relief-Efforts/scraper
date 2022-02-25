@@ -5,7 +5,7 @@ import lxml.etree as etree
 from bs4 import BeautifulSoup
 from os import path
 
-HEADERS = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0'}
+#HEADERS = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0'}
 POLAND_URL = 'https://www.gov.pl/web/udsc/ukraina2'
 
 class Reception:
@@ -58,7 +58,9 @@ def normalize(text):
 
 """Gets the website content with BS4."""
 def get_website_content():
-  website = requests.get(POLAND_URL, headers=HEADERS)
+  headers = configure_headers()
+
+  website = requests.get(POLAND_URL, headers=headers)
   return BeautifulSoup(website.content, 'html.parser')
 
 
