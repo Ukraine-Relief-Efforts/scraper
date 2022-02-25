@@ -112,7 +112,7 @@ def fetch_site():
   r = requests.get('https://www.gov.pl/web/udsc/ukraina2', headers=headers)
   text_arr = get_core(r)
   print(text_arr)
-  reception_arr = fetch_reception_points(r)
+  reception_arr = get_reception_points(r)
   for i in reception_arr:
     print(i)
 
