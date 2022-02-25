@@ -28,6 +28,6 @@ class Reception:
   def gmaps(self):
     return self._gmaps
 
-  @qr_url.setter
+  @gmaps.setter
   def gmaps(self, qr):
     self._gmaps = qr
