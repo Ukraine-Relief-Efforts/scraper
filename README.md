@@ -13,7 +13,8 @@ Format (TBC):
     "general": [ "str1", "str2"],
     "reception": [ 
           {
-               "qr": "image link"
+               "qr": "image link",
+               "gmaps": "gmaps link",
                "address": "address",
           },
           ....
