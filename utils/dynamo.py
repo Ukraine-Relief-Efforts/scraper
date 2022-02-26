@@ -15,6 +15,11 @@ def write_to_dynamo(country: str, general: list, reception: list, source: str):
         general (list[str]): More general information.
         reception (list): Border crossing points.
     """
+
+    general_list = []
+    for line in general:
+        general_list.append({ "S": line })
+
     reception_list = []
     for rec in reception:
         reception_list.append({
@@ -31,7 +36,7 @@ def write_to_dynamo(country: str, general: list, reception: list, source: str):
         TableName = TABLE_NAME,
         Item = {
             "country": { "S": country },
-            "general": { "SS": general },
+            "general": { "L": general_list },
             "reception": { "L": reception_list },
             "source": { "S": source }
         })
