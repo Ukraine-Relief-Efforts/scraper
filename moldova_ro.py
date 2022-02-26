@@ -8,19 +8,19 @@ from utils.utils import get_website_content, write_to_json, normalize
 MOLDOVA_UKRAINE_URL = "https://www.border.gov.md/ro/ucraina"
 MOLDOVA_KML = "http://www.google.com/maps/d/kml?forcekml=1&mid=1S38hHlp67u7UoFgVGFC-GCU2Efsn6WeC"
 
-"""Runs the scraping logic."""
 def scrape_moldova_ro():
-  # Start with general border info
+  """Start with general border info"""
   content = get_website_content(MOLDOVA_UKRAINE_URL)
   core = get_general(content)
 
-  # Get border crossing points
+  """Get border crossing points"""
   reception_arr = get_reception_points(content)
   path = os.path.join(OUTPUT_DIR, 'moldova_ro.json')
   write_to_json(path, core, reception_arr, MOLDOVA_UKRAINE_URL)
 
-"""Gets general border crossing information."""
+
 def get_general(content):
+  """Gets general border crossing information."""
   main_div = content.find('div', class_="col-lg-10 offset-lg-1");
   items = main_div.findAll('p')
   text_arr = []
@@ -29,8 +29,8 @@ def get_general(content):
   return text_arr
 
 
-"""Gets the list of reception points."""
 def get_reception_points(soup):
+  """Gets the list of reception points."""
   recep_arr = []
 
    # Get map KML

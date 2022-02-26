@@ -5,8 +5,9 @@ from utils.utils import get_website_content, write_to_json, normalize
 
 POLAND_PL_URL = 'https://www.gov.pl/web/udsc/ukraina2'
 
-"""Runs the scraping logic."""
+
 def scrape_poland_pl():
+  """Runs the scraping logic."""
   content = get_website_content(POLAND_PL_URL)
   core = get_core(content)
   reception_arr = get_reception_points(content)
@@ -14,20 +15,22 @@ def scrape_poland_pl():
   write_to_json(path, core, reception_arr, POLAND_PL_URL)
 
 
-"""Gets the content from a bullet points list of general information for Ukrainian citizens."""
 def get_core(content):
+  """Gets the content from a bullet points list of general information for Ukrainian citizens."""
   items = content.find('div', class_="editor-content").findAll('li')
   text_arr = []
   for item in items:
     text_arr.append(normalize(item.get_text(strip=True, separator=' ')))
   return text_arr
 
-"""Converts a Google maps URL string into latitude and longitude."""
+
 def gmaps_url_to_lat_lon(url):
+  """Converts a Google maps URL string into latitude and longitude."""
   return url.split("!3d")[1].split("!4d")
 
-"""Gets the list of reception points."""
+
 def get_reception_points(soup):
+  """Gets the list of reception points."""
   item = soup.find('div', class_="editor-content").findAll('p')
   item = item[1:]
   

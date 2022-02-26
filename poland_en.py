@@ -6,8 +6,9 @@ from utils.utils import get_website_content, write_to_json, normalize
 
 POLAND_EN_URL = 'https://www.gov.pl/web/udsc/ukraina-en'
 
-"""Runs the scraping logic."""
+
 def scrape_poland_en():
+  """Runs the scraping logic."""
   content = get_website_content(POLAND_EN_URL)
   core = get_core(content)
   reception_arr = get_reception_points(content)
@@ -15,8 +16,8 @@ def scrape_poland_en():
   write_to_json(path, core, reception_arr, POLAND_EN_URL)
 
 
-"""Gets the content from a bullet points list of general information for Ukrainian citizens."""
 def get_core(content):
+  """Gets the content from a bullet points list of general information for Ukrainian citizens."""
   items = content.find('div', class_="editor-content").findAll("span")
   text_arr = []
   for item in items:
@@ -26,8 +27,8 @@ def get_core(content):
   return text_arr
 
 
-"""Gets the list of reception points."""
 def get_reception_points(soup):
+  """Gets the list of reception points."""
   items = soup.find('div', class_="editor-content").find('div').findChildren(recursive=False)
   reception_list_start = False
   recep_arr = []
@@ -53,7 +54,7 @@ def get_reception_points(soup):
           r.lat, r.lon = gmaps_url_to_lat_lon(gmaps['href'])
         else:
           break
-        
+
       img = item.find('img', src=True)
 
       # first item is special because the qr and address are in the same <p> tag

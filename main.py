@@ -10,3 +10,4 @@ if __name__=="__main__":
 
     print("Scraping Moldova (RO)")
     scrape_moldova_ro()
+    

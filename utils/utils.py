@@ -1,17 +1,16 @@
 import json
 import logging
-from pickle import FALSE
 import requests
 from bs4 import BeautifulSoup
 from utils.constants import LOGFILE_PATH, HEADERS
 import unicodedata
 
-"""Normalizes the provided text. This is needed to get rid of weird entries like \xa0."""
 def normalize(text):
+  """Normalizes the provided text. This is needed to get rid of weird entries like \xa0."""
   return unicodedata.normalize("NFKD", text)
 
-"""Gets the website content with BS4."""
 def get_website_content(url, headers=HEADERS):
+  """Gets the website content with BS4."""
   website = requests.get(url, headers=headers)
   return BeautifulSoup(website.content, 'html.parser')
 
@@ -41,3 +40,4 @@ def setup_logger():
     ]
   )
   return LOGGER
+  
