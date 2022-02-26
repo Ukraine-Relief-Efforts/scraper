@@ -1,8 +1,7 @@
 import os
-from poland_pl import gmaps_url_to_lat_lon
 from utils.reception import Reception
 from utils.constants import OUTPUT_DIR
-from utils.utils import get_website_content, write_to_json, normalize
+from utils.utils import get_website_content, gmaps_url_to_lat_lon, write_to_json, normalize
 
 POLAND_EN_URL = 'https://www.gov.pl/web/udsc/ukraina-en'
 

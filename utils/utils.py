@@ -14,6 +14,10 @@ def get_website_content(url, headers=HEADERS):
   website = requests.get(url, headers=headers)
   return BeautifulSoup(website.content, 'html.parser')
 
+def gmaps_url_to_lat_lon(url):
+  """Converts a Google maps URL string into latitude and longitude."""
+  return url.split("!3d")[1].split("!4d")
+
 def write_to_json(filename, text_arr, reception_arr, source):
   reception = []
   for rec in reception_arr:

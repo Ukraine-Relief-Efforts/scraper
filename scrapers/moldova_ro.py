@@ -14,14 +14,14 @@ def scrape_moldova_ro():
   core = get_general(content)
 
   """Get border crossing points"""
-  reception_arr = get_reception_points(content)
+  reception_arr = get_reception_points()
   path = os.path.join(OUTPUT_DIR, 'moldova_ro.json')
   write_to_json(path, core, reception_arr, MOLDOVA_UKRAINE_URL)
 
 
 def get_general(content):
   """Gets general border crossing information."""
-  main_div = content.find('div', class_="col-lg-10 offset-lg-1");
+  main_div = content.find('div', class_="col-lg-10 offset-lg-1")
   items = main_div.findAll('p')
   text_arr = []
   for item in items:
@@ -29,15 +29,15 @@ def get_general(content):
   return text_arr
 
 
-def get_reception_points(soup):
+def get_reception_points():
   """Gets the list of reception points."""
   recep_arr = []
 
-   # Get map KML
+  """Get map KML"""
   kml_str = requests.get(MOLDOVA_KML, headers=HEADERS).content
   kml = Kml.fromstring(kml_str)
 
-  # Find all placemarks
+  """Find all placemarks"""
   placemarks = kml.Document.Folder.findall('.//{http://www.opengis.net/kml/2.2}Placemark')
   for placemark in placemarks:
     r = Reception()
