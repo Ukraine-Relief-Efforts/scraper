@@ -1,7 +1,6 @@
-import os
+from utils.dynamo import write_to_dynamo
 from utils.reception import Reception
-from utils.constants import OUTPUT_DIR
-from utils.utils import get_website_content, gmaps_url_to_lat_lon, write_to_json, normalize
+from utils.utils import get_website_content, gmaps_url_to_lat_lon, normalize
 
 POLAND_EN_URL = 'https://www.gov.pl/web/udsc/ukraina-en'
 
@@ -9,13 +8,12 @@ POLAND_EN_URL = 'https://www.gov.pl/web/udsc/ukraina-en'
 def scrape_poland_en():
   """Runs the scraping logic."""
   content = get_website_content(POLAND_EN_URL)
-  core = get_core(content)
+  general = get_general(content)
   reception_arr = get_reception_points(content)
-  path = os.path.join(OUTPUT_DIR, 'poland_en.json')
-  write_to_json(path, core, reception_arr, POLAND_EN_URL)
+  write_to_dynamo("poland-en", general, reception_arr, POLAND_EN_URL)
 
 
-def get_core(content):
+def get_general(content):
   """Gets the content from a bullet points list of general information for Ukrainian citizens."""
   items = content.find('div', class_="editor-content").findAll("span")
   text_arr = []

@@ -1,9 +1,9 @@
-import os
 import requests
 from pykml import parser as Kml
+from utils.dynamo import write_to_dynamo
 from utils.reception import Reception
-from utils.constants import HEADERS, OUTPUT_DIR
-from utils.utils import get_website_content, write_to_json, normalize
+from utils.constants import HEADERS
+from utils.utils import get_website_content, normalize
 
 HUNGARY_URL = "https://www.police.hu/hu/hirek-es-informaciok/hatarinfo/hataratlepessel-kapcsolatos-informaciok"
 HUNGARY_KML = "http://www.google.com/maps/d/kml?forcekml=1&mid=1d54nWG4ig0rmBPj3K3RF3I1mkY0KOFZd"
@@ -11,12 +11,11 @@ HUNGARY_KML = "http://www.google.com/maps/d/kml?forcekml=1&mid=1d54nWG4ig0rmBPj3
 def scrape_hungary_hu():
   """Start with general border info"""
   content = get_website_content(HUNGARY_URL)
-  core = get_general(content)
+  general = get_general(content)
 
   """Get border crossing points"""
   reception_arr = get_reception_points()
-  path = os.path.join(OUTPUT_DIR, 'hungary_hu.json')
-  write_to_json(path, core, reception_arr, HUNGARY_URL)
+  write_to_dynamo("hungary-hu", general, reception_arr, HUNGARY_URL)
 
 
 def get_general(content):
