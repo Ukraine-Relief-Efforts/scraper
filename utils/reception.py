@@ -7,8 +7,7 @@ class Reception:
     self._lon = ""
     
   def __str__(self):
-    nl='\n'
-    return f"Location: {self._address}{nl} QR: {self.qr}{nl} GMaps:{self._gmaps}{nl}===="
+    return self._name
   
   @property
   def name(self):

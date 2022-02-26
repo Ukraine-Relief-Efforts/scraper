@@ -2,24 +2,41 @@
 
 import boto3
 
-TABLE_NAME = 'TechForUkraine-CIG'
+TABLE_NAME = "TechForUkraine-CIG"
 
+client = boto3.client("dynamodb", region_name="us-east-1")
 
-def save(country: str, general: set, reception: list):
+def write_to_dynamo(country: str, general: list, reception: list, source: str):
     """
     Write the data to DynamoDB.
 
     Args:
         country (str): The name of the country.
-        general (set[str]): More general information.
-        reception (list[str]): Information on locations available to receive
-            refugees (I think?  I can't actually read the sample data).
+        general (list[str]): More general information.
+        reception (list): Border crossing points.
     """
-    dynamodb = boto3.resource('dynamodb')
-    table = dynamodb.Table(TABLE_NAME)
 
-    table.put_item(Item={
-        'country': country,
-        'general': general,
-        'reception': reception
-    })
+    general_list = []
+    for line in general:
+        general_list.append({ "S": line })
+
+    reception_list = []
+    for rec in reception:
+        reception_list.append({
+            "M": {
+                "name": { "S": rec.name },
+                "lat": { "S": rec.lat },
+                "lon": { "S": rec.lon },
+                "address": { "S": rec.address },
+                "qr": { "S": rec.qr }
+            }
+        })
+
+    client.put_item(
+        TableName = TABLE_NAME,
+        Item = {
+            "country": { "S": country },
+            "general": { "L": general_list },
+            "reception": { "L": reception_list },
+            "source": { "S": source }
+        })
