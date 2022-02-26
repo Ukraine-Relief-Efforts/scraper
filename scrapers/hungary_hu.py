@@ -15,7 +15,7 @@ def scrape_hungary_hu():
 
   """Get border crossing points"""
   reception_arr = get_reception_points()
-  write_to_dynamo("hungary-hu", general, reception_arr, HUNGARY_URL)
+  write_to_dynamo("hungary-hu-test", general, reception_arr, HUNGARY_URL)
 
 
 def get_general(content):

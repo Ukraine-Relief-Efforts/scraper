@@ -15,7 +15,7 @@ def scrape_moldova_ro():
 
   """Get border crossing points"""
   reception_arr = get_reception_points()
-  write_to_dynamo("moldova-ro", general, reception_arr, MOLDOVA_UKRAINE_URL)
+  write_to_dynamo("moldova-ro-test", general, reception_arr, MOLDOVA_UKRAINE_URL)
 
 
 def get_general(content):
