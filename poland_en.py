@@ -49,8 +49,11 @@ def get_reception_points(soup):
       gmaps = item.find('a', href=True)
       
       if gmaps:
-        r.lat, r.lon = gmaps_url_to_lat_lon(gmaps['href'])
-
+        if "!3d" in gmaps['href']:
+          r.lat, r.lon = gmaps_url_to_lat_lon(gmaps['href'])
+        else:
+          break
+        
       img = item.find('img', src=True)
 
       # first item is special because the qr and address are in the same <p> tag
