@@ -4,7 +4,6 @@ from utils.constants import OUTPUT_DIR
 from utils.utils import get_website_content, write_to_json, normalize
 
 POLAND_PL_URL = 'https://www.gov.pl/web/udsc/ukraina2'
-POLAND_EN_URL = 'https://www.gov.pl/web/udsc/ukraina-en'
 
 """Runs the scraping logic."""
 def scrape_poland_pl():
