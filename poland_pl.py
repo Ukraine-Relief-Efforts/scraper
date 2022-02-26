@@ -3,39 +3,39 @@ from utils.reception import Reception
 from utils.constants import OUTPUT_DIR
 from utils.utils import get_website_content, write_to_json, normalize
 
-POLAND_PL_URL = 'https://www.gov.pl/web/udsc/ukraina2'
+POLAND_PL_URL = "https://www.gov.pl/web/udsc/ukraina2"
 
 
 def scrape_poland_pl():
-  """Runs the scraping logic."""
-  content = get_website_content(POLAND_PL_URL)
-  core = get_core(content)
-  reception_arr = get_reception_points(content)
-  path = os.path.join(OUTPUT_DIR, 'poland_pl.json')
-  write_to_json(path, core, reception_arr, POLAND_PL_URL)
+    """Runs the scraping logic."""
+    content = get_website_content(POLAND_PL_URL)
+    core = get_core(content)
+    reception_arr = get_reception_points(content)
+    path = os.path.join(OUTPUT_DIR, "poland_pl.json")
+    write_to_json(path, core, reception_arr, POLAND_PL_URL)
 
 
 def get_core(content):
-  """Gets the content from a bullet points list of general information for Ukrainian citizens."""
-  items = content.find('div', class_="editor-content").findAll('li')
-  text_arr = []
-  for item in items:
-    text_arr.append(normalize(item.get_text(strip=True, separator=' ')))
-  return text_arr
+    """Gets the content from a bullet points list of general information for Ukrainian citizens."""
+    items = content.find("div", class_="editor-content").findAll("li")
+    text_arr = []
+    for item in items:
+        text_arr.append(normalize(item.get_text(strip=True, separator=" ")))
+    return text_arr
 
 
 def gmaps_url_to_lat_lon(url):
-  """Converts a Google maps URL string into latitude and longitude."""
-  return url.split("!3d")[1].split("!4d")
+    """Converts a Google maps URL string into latitude and longitude."""
+    return url.split("!3d")[1].split("!4d")
 
 
 def get_reception_points(soup):
-  """Gets the list of reception points."""
-  item = soup.find('div', class_="editor-content").findAll('p')
-  item = item[1:]
-  
-  recep_arr = []
-  """
+    """Gets the list of reception points."""
+    item = soup.find("div", class_="editor-content").findAll("p")
+    item = item[1:]
+
+    recep_arr = []
+    """
     First one looks like this
     
     <p><span style="font-size:11pt"><u><span style="font-size:10.5pt"><span style="color:blue"><a href="https://www.google.pl/maps/place/Gminny+Ośrodek+Kultury+i+Turystyki/@51.1653246,23.8026394,17z/data=!3m1!4b1!4m5!3m4!1s0x4723890b09b9cd4d:0x5747c0a6dfbbb992!8m2!3d51.1653213!4d23.8048281"><span style="color:blue">Pałac Suchodolskich Gminny Ośrodek Kultury i Turystyki, ul. Parkowa 5, 22-175 </span><strong>Dorohusk – osiedle</strong></a></span></span></u><br>
@@ -50,40 +50,40 @@ def get_reception_points(soup):
   Temporarily hardcoding for the first one
     
   """
-  special_case = item[0]
-  r = Reception()
-  r.address = normalize(special_case.get_text(strip=True, separator=' '))
-  gmaps = special_case.find('a', href=True)
-  
-  if gmaps:
-    r.name = normalize(gmaps.find('span').get_text(strip=True))
-    r.lat, r.lon = gmaps_url_to_lat_lon(gmaps['href'])
+    special_case = item[0]
+    r = Reception()
+    r.address = normalize(special_case.get_text(strip=True, separator=" "))
+    gmaps = special_case.find("a", href=True)
 
-  img = special_case.find('img', src=True)
-  if img:
-    r.qr = img['src']
-  recep_arr.append(r)
-  item.pop(0)
-  # TODO: Remove the entire above block if and when they fix the formatting on the site.
-  
-  count = 0
-  for i in item:
-    if count %2 == 0:
-      r = Reception()
-      r.address = normalize(i.get_text(strip=True, separator=' '))
-      gmaps = i.find('a', href=True)
-      if gmaps:
-        r.name = normalize(gmaps.find('span').get_text(strip=True))
-        if "!3d" in gmaps['href']:
-          r.lat, r.lon = gmaps_url_to_lat_lon(gmaps['href'])
+    if gmaps:
+        r.name = normalize(gmaps.find("span").get_text(strip=True))
+        r.lat, r.lon = gmaps_url_to_lat_lon(gmaps["href"])
+
+    img = special_case.find("img", src=True)
+    if img:
+        r.qr = img["src"]
+    recep_arr.append(r)
+    item.pop(0)
+    # TODO: Remove the entire above block if and when they fix the formatting on the site.
+
+    count = 0
+    for i in item:
+        if count % 2 == 0:
+            r = Reception()
+            r.address = normalize(i.get_text(strip=True, separator=" "))
+            gmaps = i.find("a", href=True)
+            if gmaps:
+                r.name = normalize(gmaps.find("span").get_text(strip=True))
+                if "!3d" in gmaps["href"]:
+                    r.lat, r.lon = gmaps_url_to_lat_lon(gmaps["href"])
+                else:
+                    break
+                recep_arr.append(r)
         else:
-          break
-        recep_arr.append(r)
-    else:
-      # Get from the end of array,
-      img = i.find('img', src=True)
-      if img:
-        recep_arr[-1].qr = img['src']
-      
-    count += 1
-  return recep_arr
+            # Get from the end of array,
+            img = i.find("img", src=True)
+            if img:
+                recep_arr[-1].qr = img["src"]
+
+        count += 1
+    return recep_arr
