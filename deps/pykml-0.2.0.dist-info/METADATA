@@ -1,0 +1,36 @@
+Metadata-Version: 2.1
+Name: pykml
+Version: 0.2.0
+Summary: Python KML library
+Home-page: http://pypi.python.org/pypi/pykml
+Author: Tyler Erickson
+Author-email: tylerickson@gmail.com
+License: BSD
+Keywords: kml
+Platform: UNKNOWN
+Classifier: Programming Language :: Python
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Operating System :: OS Independent
+Classifier: Development Status :: 2 - Pre-Alpha
+Classifier: Intended Audience :: Science/Research
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Multimedia :: Graphics :: Viewers
+Classifier: Topic :: Scientific/Engineering :: GIS
+Classifier: Topic :: Scientific/Engineering :: Visualization
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Dist: lxml (>=3.3.6)
+
+=========
+pyKML
+=========
+pyKML is a Python package for parsing and authoring KML documents. It is based
+on the lxml.objectify API (http://codespeak.net/lxml/objectify.html) which
+provides Pythonic access to XML documents.
+
+.. figure:: http://pykml.googlecode.com/hg/docs/source/logo/pyKML_logo_200x200.png
+   :scale: 100 %
+   :alt: pyKML logo
+
+See the Package Documentation for information on installation and usage.
+
+

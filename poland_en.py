@@ -1,8 +1,10 @@
 import os
+
 from poland_pl import gmaps_url_to_lat_lon
-from utils.reception import Reception
+from utils import dynamo
 from utils.constants import OUTPUT_DIR
-from utils.utils import get_website_content, write_to_json, normalize
+from utils.reception import Reception
+from utils.utils import get_website_content, normalize, write_to_json
 
 POLAND_EN_URL = 'https://www.gov.pl/web/udsc/ukraina-en'
 
@@ -13,7 +15,12 @@ def scrape_poland_en():
   core = get_core(content)
   reception_arr = get_reception_points(content)
   path = os.path.join(OUTPUT_DIR, 'poland_en.json')
-  write_to_json(path, core, reception_arr, POLAND_EN_URL)
+  # write_to_json(path, core, reception_arr, POLAND_EN_URL)
+  dynamo.save(
+    country='poland-en',
+    general=core,
+    reception=reception_arr
+  )
 
 
 def get_core(content):

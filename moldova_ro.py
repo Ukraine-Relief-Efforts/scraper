@@ -1,9 +1,11 @@
 import os
+
 import requests
 from pykml import parser as Kml
-from utils.reception import Reception
+from utils import dynamo
 from utils.constants import HEADERS, OUTPUT_DIR
-from utils.utils import get_website_content, write_to_json, normalize
+from utils.reception import Reception
+from utils.utils import get_website_content, normalize, write_to_json
 
 MOLDOVA_UKRAINE_URL = "https://www.border.gov.md/ro/ucraina"
 MOLDOVA_KML = "http://www.google.com/maps/d/kml?forcekml=1&mid=1S38hHlp67u7UoFgVGFC-GCU2Efsn6WeC"
@@ -16,7 +18,13 @@ def scrape_moldova_ro():
   """Get border crossing points"""
   reception_arr = get_reception_points(content)
   path = os.path.join(OUTPUT_DIR, 'moldova_ro.json')
-  write_to_json(path, core, reception_arr, MOLDOVA_UKRAINE_URL)
+  # write_to_json(path, core, reception_arr, MOLDOVA_UKRAINE_URL)
+  dynamo.save(
+      country='modova-ro',
+      general=core,
+      reception=reception_arr
+  )
+
 
 
 def get_general(content):

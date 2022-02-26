@@ -1,0 +1,5 @@
+[console_scripts]
+csv2kml = pykml.util:csv2kml
+kml2pykml = pykml.factory:kml2pykml
+validate_kml = pykml.parser:validate_kml
+
