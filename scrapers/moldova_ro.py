@@ -9,6 +9,8 @@ MOLDOVA_UKRAINE_URL = "https://www.border.gov.md/ro/ucraina"
 MOLDOVA_KML = "http://www.google.com/maps/d/kml?forcekml=1&mid=1S38hHlp67u7UoFgVGFC-GCU2Efsn6WeC"
 
 def scrape_moldova_ro():
+  print("Scraping Moldova (RO)")
+  
   """Start with general border info"""
   content = get_website_content(MOLDOVA_UKRAINE_URL)
   general = get_general(content)

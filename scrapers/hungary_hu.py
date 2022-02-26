@@ -9,6 +9,8 @@ HUNGARY_URL = "https://www.police.hu/hu/hirek-es-informaciok/hatarinfo/hataratle
 HUNGARY_KML = "http://www.google.com/maps/d/kml?forcekml=1&mid=1d54nWG4ig0rmBPj3K3RF3I1mkY0KOFZd"
 
 def scrape_hungary_hu():
+  print("Scraping Hungary (HU)")
+  
   """Start with general border info"""
   content = get_website_content(HUNGARY_URL)
   general = get_general(content)
