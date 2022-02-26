@@ -1,6 +1,10 @@
 # Scraper for Ukraine Centralized Information Guide
 
-Desired Information:
+## Project Board [Here](https://github.com/orgs/Ukraine-Relief-Efforts/projects/1/views/6)
+
+
+
+## Desired Information:
 1. General guidelines
 2. Reception points
 3. Map link
