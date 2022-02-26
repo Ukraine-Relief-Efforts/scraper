@@ -1,9 +1,13 @@
+from pathlib import Path
 from scrapers.poland_pl import scrape_poland_pl
 from scrapers.poland_en import scrape_poland_en
 from scrapers.moldova_ro import scrape_moldova_ro
 from scrapers.hungary_hu import scrape_hungary_hu
+from utils.constants import OUTPUT_DIR
 
 if __name__=="__main__":
+    Path(OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
+
     print("Scraping Poland (PL)")
     scrape_poland_pl()
     print("Scraping Poland (EN)")
