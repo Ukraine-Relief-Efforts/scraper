@@ -8,14 +8,20 @@ POLAND_PL_URL = 'https://www.gov.pl/web/udsc/ukraina2'
 POLAND_UA_URL = 'https://www.gov.pl/web/udsc/ukraina---ua'
 
 def scrape_poland_pl():
+    print("Scraping Poland (PL)")
+
     """calls scrape_poland with the appropriate arguments for the pl website"""
     scrape_poland(POLAND_PL_URL, 'pl')
 
 def scrape_poland_en():
+    print("Scraping Poland (EN)")
+
     """calls scrape_poland with the appropriate arguments for the en website"""
     scrape_poland(POLAND_EN_URL, 'en')
 
 def scrape_poland_ua():
+    print("Scraping Poand (UA)")
+    
     """calls scrape_poland with the appropriate arguments for the ua website"""
     scrape_poland(POLAND_UA_URL, 'ua')
 
