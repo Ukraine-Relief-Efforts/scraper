@@ -7,6 +7,8 @@ POLAND_PL_URL = 'https://www.gov.pl/web/udsc/ukraina2'
 
 
 def scrape_poland_pl():
+  print("Scraping Poland (PL)")
+  
   """Runs the scraping logic."""
   content = get_website_content(POLAND_PL_URL)
   core = get_core(content)
