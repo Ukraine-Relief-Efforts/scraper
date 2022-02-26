@@ -5,6 +5,7 @@ from utils.utils import get_website_content, gmaps_url_to_lat_lon, write_to_json
 
 POLAND_EN_URL = 'https://www.gov.pl/web/udsc/ukraina-en'
 POLAND_PL_URL = 'https://www.gov.pl/web/udsc/ukraina2'
+POLAND_UA_URL = 'https://www.gov.pl/web/udsc/ukraina---ua'
 
 def scrape_poland_pl():
     """calls scrape_poland with the appropriate arguments for the pl website"""
@@ -13,6 +14,10 @@ def scrape_poland_pl():
 def scrape_poland_en():
     """calls scrape_poland with the appropriate arguments for the en website"""
     scrape_poland(POLAND_EN_URL, 'en')
+
+def scrape_poland_ua():
+    """calls scrape_poland with the appropriate arguments for the ua website"""
+    scrape_poland(POLAND_UA_URL, 'ua')
 
 def get_core(content, locale):
     """Gets the content from a bullet points list of general information for Ukrainian citizens."""
@@ -28,10 +33,11 @@ def scrape_poland(url, locale):
     """Runs the scraping logic."""
     content = get_website_content(url)
     core = get_core(content, locale)
-    if locale == "pl":
+    if locale in ("pl", "ua"): #poland_ua uses same logic as poland_pl
         reception_arr = get_reception_points_pl(content)
-    else:
+    elif locale == "en":
         reception_arr = get_reception_points_en(content)
+
     path = os.path.join(OUTPUT_DIR, f'poland_{locale}.json')
     write_to_json(path, core, reception_arr, url)
 
@@ -129,8 +135,8 @@ def get_reception_points_pl(soup):
             r.address = normalize(i.get_text(strip=True, separator=' '))
             gmaps = i.find('a', href=True)
             if gmaps:
-                r.name = normalize(gmaps.find('span').get_text(strip=True))
                 if "!3d" in gmaps['href']:
+                    r.name = normalize(gmaps.find('span').get_text(strip=True))
                     r.lat, r.lon = gmaps_url_to_lat_lon(gmaps['href'])
                 else:
                     break
