@@ -1,6 +1,6 @@
-from poland_pl import scrape_poland_pl
-from poland_en import scrape_poland_en
-from moldova_ro import scrape_moldova_ro
+from scrapers.poland_pl import scrape_poland_pl
+from scrapers.poland_en import scrape_poland_en
+from scrapers.moldova_ro import scrape_moldova_ro
 
 if __name__=="__main__":
     print("Scraping Poland (PL)")

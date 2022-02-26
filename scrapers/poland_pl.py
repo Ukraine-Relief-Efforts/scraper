@@ -1,7 +1,7 @@
 import os
 from utils.reception import Reception
 from utils.constants import OUTPUT_DIR
-from utils.utils import get_website_content, write_to_json, normalize
+from utils.utils import get_website_content, gmaps_url_to_lat_lon, write_to_json, normalize
 
 POLAND_PL_URL = 'https://www.gov.pl/web/udsc/ukraina2'
 
@@ -22,11 +22,6 @@ def get_core(content):
   for item in items:
     text_arr.append(normalize(item.get_text(strip=True, separator=' ')))
   return text_arr
-
-
-def gmaps_url_to_lat_lon(url):
-  """Converts a Google maps URL string into latitude and longitude."""
-  return url.split("!3d")[1].split("!4d")
 
 
 def get_reception_points(soup):
