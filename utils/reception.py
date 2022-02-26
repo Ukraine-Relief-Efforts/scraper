@@ -1,20 +1,30 @@
 class Reception:
   def __init__(self):
-    self._location = ""
+    self._name = ""
+    self._address = ""
     self._qr = ""
-    self._gmaps = ""
+    self._lat = ""
+    self._lon = ""
     
   def __str__(self):
     nl='\n'
-    return f"Location: {self._location}{nl} QR: {self.qr}{nl} GMaps:{self._gmaps}{nl}===="
+    return f"Location: {self._address}{nl} QR: {self.qr}{nl} GMaps:{self._gmaps}{nl}===="
   
   @property
-  def location(self):
-    return self._location
+  def name(self):
+    return self._name
 
-  @location.setter
-  def location(self, loc):
-    self._location = loc
+  @name.setter
+  def name(self, name):
+    self._name = name
+  
+  @property
+  def address(self):
+    return self._address
+
+  @address.setter
+  def address(self, loc):
+    self._address = loc
   
   @property
   def qr(self):
@@ -25,9 +35,17 @@ class Reception:
     self._qr = qr
     
   @property
-  def gmaps(self):
-    return self._gmaps
+  def lat(self):
+    return self._lat
 
-  @gmaps.setter
-  def gmaps(self, gmaps):
-    self._gmaps = gmaps
+  @lat.setter
+  def lat(self, lat):
+    self._lat = lat
+
+  @property
+  def lon(self):
+    return self._lon
+
+  @lon.setter
+  def lon(self, lon):
+    self._lon = lon

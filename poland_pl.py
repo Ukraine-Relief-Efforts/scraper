@@ -1,26 +1,22 @@
 import os
-import requests
-from bs4 import BeautifulSoup
 from utils.reception import Reception
-from utils.constants import POLAND_PL_URL, HEADERS, OUTPUT_DIR
-from utils.utils import write_to_json, normalize
+from utils.constants import OUTPUT_DIR
+from utils.utils import get_website_content, write_to_json, normalize
 
-"""Runs the scraping logic."""
+POLAND_PL_URL = 'https://www.gov.pl/web/udsc/ukraina2'
+
+
 def scrape_poland_pl():
-  content = get_website_content()
+  """Runs the scraping logic."""
+  content = get_website_content(POLAND_PL_URL)
   core = get_core(content)
   reception_arr = get_reception_points(content)
   path = os.path.join(OUTPUT_DIR, 'poland_pl.json')
   write_to_json(path, core, reception_arr, POLAND_PL_URL)
 
-"""Gets the website content with BS4."""
-def get_website_content():
-  website = requests.get(POLAND_PL_URL, headers=HEADERS)
-  return BeautifulSoup(website.content, 'html.parser')
 
-
-"""Gets the content from a bullet points list of general information for Ukrainian citizens."""
 def get_core(content):
+  """Gets the content from a bullet points list of general information for Ukrainian citizens."""
   items = content.find('div', class_="editor-content").findAll('li')
   text_arr = []
   for item in items:
@@ -28,8 +24,13 @@ def get_core(content):
   return text_arr
 
 
-"""Gets the list of reception points."""
+def gmaps_url_to_lat_lon(url):
+  """Converts a Google maps URL string into latitude and longitude."""
+  return url.split("!3d")[1].split("!4d")
+
+
 def get_reception_points(soup):
+  """Gets the list of reception points."""
   item = soup.find('div', class_="editor-content").findAll('p')
   item = item[1:]
   
@@ -51,11 +52,13 @@ def get_reception_points(soup):
   """
   special_case = item[0]
   r = Reception()
-  r.location = normalize(special_case.get_text(strip=True, separator=' '))
+  r.address = normalize(special_case.get_text(strip=True, separator=' '))
   gmaps = special_case.find('a', href=True)
   
   if gmaps:
-    r.gmaps = gmaps['href']
+    r.name = normalize(gmaps.find('span').get_text(strip=True))
+    r.lat, r.lon = gmaps_url_to_lat_lon(gmaps['href'])
+
   img = special_case.find('img', src=True)
   if img:
     r.qr = img['src']
@@ -67,10 +70,14 @@ def get_reception_points(soup):
   for i in item:
     if count %2 == 0:
       r = Reception()
-      r.location = normalize(i.get_text(strip=True, separator=' '))
+      r.address = normalize(i.get_text(strip=True, separator=' '))
       gmaps = i.find('a', href=True)
       if gmaps:
-        r.gmaps = gmaps['href']
+        r.name = normalize(gmaps.find('span').get_text(strip=True))
+        if "!3d" in gmaps['href']:
+          r.lat, r.lon = gmaps_url_to_lat_lon(gmaps['href'])
+        else:
+          break
         recep_arr.append(r)
     else:
       # Get from the end of array,

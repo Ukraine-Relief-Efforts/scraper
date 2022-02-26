@@ -1,27 +1,23 @@
 import os
-import requests
-from bs4 import BeautifulSoup
+from poland_pl import gmaps_url_to_lat_lon
 from utils.reception import Reception
-from utils.constants import POLAND_EN_URL, HEADERS, OUTPUT_DIR
-from utils.utils import write_to_json, normalize
+from utils.constants import OUTPUT_DIR
+from utils.utils import get_website_content, write_to_json, normalize
+
+POLAND_EN_URL = 'https://www.gov.pl/web/udsc/ukraina-en'
 
 
-"""Runs the scraping logic."""
 def scrape_poland_en():
-  content = get_website_content()
+  """Runs the scraping logic."""
+  content = get_website_content(POLAND_EN_URL)
   core = get_core(content)
   reception_arr = get_reception_points(content)
   path = os.path.join(OUTPUT_DIR, 'poland_en.json')
   write_to_json(path, core, reception_arr, POLAND_EN_URL)
 
-"""Gets the website content with BS4."""
-def get_website_content():
-  website = requests.get(POLAND_EN_URL, headers=HEADERS)
-  return BeautifulSoup(website.content, 'html.parser')
 
-
-"""Gets the content from a bullet points list of general information for Ukrainian citizens."""
 def get_core(content):
+  """Gets the content from a bullet points list of general information for Ukrainian citizens."""
   items = content.find('div', class_="editor-content").findAll("span")
   text_arr = []
   for item in items:
@@ -31,8 +27,8 @@ def get_core(content):
   return text_arr
 
 
-"""Gets the list of reception points."""
 def get_reception_points(soup):
+  """Gets the list of reception points."""
   items = soup.find('div', class_="editor-content").find('div').findChildren(recursive=False)
   reception_list_start = False
   recep_arr = []
@@ -50,11 +46,15 @@ def get_reception_points(soup):
     if reception_list_start:
       count += 1
       r = Reception()
-      r.location = normalize(item.get_text(strip=True, separator=' '))
+      r.address = r.name = normalize(item.get_text(strip=True, separator=' '))
       gmaps = item.find('a', href=True)
       
       if gmaps:
-        r.gmaps = gmaps['href']
+        if "!3d" in gmaps['href']:
+          r.lat, r.lon = gmaps_url_to_lat_lon(gmaps['href'])
+        else:
+          break
+
       img = item.find('img', src=True)
 
       # first item is special because the qr and address are in the same <p> tag
