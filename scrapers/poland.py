@@ -7,89 +7,91 @@ POLAND_EN_URL = 'https://www.gov.pl/web/udsc/ukraina-en'
 POLAND_PL_URL = 'https://www.gov.pl/web/udsc/ukraina2'
 
 def scrape_poland_pl():
-  """calls scrape_poland with the appropriate arguments for the pl website"""
-  scrape_poland(POLAND_PL_URL, 'pl')
+    """calls scrape_poland with the appropriate arguments for the pl website"""
+    scrape_poland(POLAND_PL_URL, 'pl')
 
 def scrape_poland_en():
-  """calls scrape_poland with the appropriate arguments for the en website"""
-  scrape_poland(POLAND_EN_URL, 'en')
+    """calls scrape_poland with the appropriate arguments for the en website"""
+    scrape_poland(POLAND_EN_URL, 'en')
 
 def get_core(content, locale):
-  """Gets the content from a bullet points list of general information for Ukrainian citizens."""
-  items = content.find('div', class_="editor-content").findAll("span" if locale == "en" else "li")
-  text_arr = []
-  for item in items:
-    if item.find(text="RECEPTION POINT ADDRESS"):
-      break
-    text_arr.append(normalize(item.get_text(strip=True, separator=' ')))
-  return text_arr
+    """Gets the content from a bullet points list of general information for Ukrainian citizens."""
+    items = content.find('div', class_="editor-content").findAll("span" if locale == "en" else "li")
+    text_arr = []
+    for item in items:
+        if item.find(text="RECEPTION POINT ADDRESS"):
+            break
+        text_arr.append(normalize(item.get_text(strip=True, separator=' ')))
+    return text_arr
 
 def scrape_poland(url, locale):
-  """Runs the scraping logic."""
-  content = get_website_content(url)
-  core = get_core(content, locale)
-  if locale == "pl":
-    reception_arr = get_reception_points_pl(content)
-  else:
-    reception_arr = get_reception_points_en(content)
-  path = os.path.join(OUTPUT_DIR, f'poland_{locale}.json')
-  write_to_json(path, core, reception_arr, url)
+    """Runs the scraping logic."""
+    content = get_website_content(url)
+    core = get_core(content, locale)
+    if locale == "pl":
+        reception_arr = get_reception_points_pl(content)
+    else:
+        reception_arr = get_reception_points_en(content)
+    path = os.path.join(OUTPUT_DIR, f'poland_{locale}.json')
+    write_to_json(path, core, reception_arr, url)
 
 def get_reception_points_en(soup):
-  """Gets the list of reception points."""
-  items = soup.find('div', class_="editor-content").find('div').findChildren(recursive=False)
-  reception_list_start = False
-  recep_arr = []
-  count = 0
+    """Gets the list of reception points."""
+    items = soup.find('div', class_="editor-content").find('div').findChildren(recursive=False)
+    reception_list_start = False
+    recep_arr = []
+    count = 0
 
-  for item in items:
-    # start scraping for reception points after the title
-    if item.find(text="RECEPTION POINT ADDRESS"):
-      reception_list_start = True
-      continue
-    # stop scraping after "what's next?"
-    elif item.find(text="What next?"):
-      break
+    for item in items:
+        # start scraping for reception points after the title
+        if item.find(text="RECEPTION POINT ADDRESS"):
+            reception_list_start = True
+            continue
+        # stop scraping after "what's next?"
+        if item.find(text="What next?"):
+            break
 
-    if reception_list_start:
-      count += 1
-      r = Reception()
-      r.address = r.name = normalize(item.get_text(strip=True, separator=' '))
-      gmaps = item.find('a', href=True)
-      
-      if gmaps:
-        if "!3d" in gmaps['href']:
-          r.lat, r.lon = gmaps_url_to_lat_lon(gmaps['href'])
-        else:
-          break
+        if not reception_list_start:
+            continue
 
-      img = item.find('img', src=True)
+        count += 1
+        r = Reception()
+        r.address = r.name = normalize(item.get_text(strip=True, separator=' '))
+        gmaps = item.find('a', href=True)
 
-      # first item is special because the qr and address are in the same <p> tag
-      if count == 1:
-        if img:
-          r.qr = img['src']
-        recep_arr.append(r)
-        continue
+        if gmaps:
+            if "!3d" in gmaps['href']:
+                r.lat, r.lon = gmaps_url_to_lat_lon(gmaps['href'])
+            else:
+                break
 
-      # normal items: qr and address are in separate <p> tags
-      if count % 2 == 0:
-        recep_arr.append(r)
-      else:
-        # Get from the end of array,
         img = item.find('img', src=True)
-        if img:
-          recep_arr[-1].qr = img['src']
 
-  return recep_arr
+        # first item is special because the qr and address are in the same <p> tag
+        if count == 1:
+            if img:
+                r.qr = img['src']
+            recep_arr.append(r)
+            continue
+
+        # normal items: qr and address are in separate <p> tags
+        if count % 2 == 0:
+            recep_arr.append(r)
+        else:
+            # Get from the end of array,
+            img = item.find('img', src=True)
+            if img:
+                recep_arr[-1].qr = img['src']
+
+    return recep_arr
 
 def get_reception_points_pl(soup):
-  """Gets the list of reception points."""
-  item = soup.find('div', class_="editor-content").findAll('p')
-  item = item[1:]
-  
-  recep_arr = []
-  """
+    """Gets the list of reception points."""
+    item = soup.find('div', class_="editor-content").findAll('p')
+    item = item[1:]
+
+    recep_arr = []
+    """
     First one looks like this
     
     <p><span style="font-size:11pt"><u><span style="font-size:10.5pt"><span style="color:blue"><a href="https://www.google.pl/maps/place/Gminny+Ośrodek+Kultury+i+Turystyki/@51.1653246,23.8026394,17z/data=!3m1!4b1!4m5!3m4!1s0x4723890b09b9cd4d:0x5747c0a6dfbbb992!8m2!3d51.1653213!4d23.8048281"><span style="color:blue">Pałac Suchodolskich Gminny Ośrodek Kultury i Turystyki, ul. Parkowa 5, 22-175 </span><strong>Dorohusk – osiedle</strong></a></span></span></u><br>
@@ -101,43 +103,43 @@ def get_reception_points_pl(soup):
 =====
 <p><span style="font-size:11pt"><img alt="https://www.qr-online.pl/bin/qr/7608a0a9319f79f95fb5346d5f6e3466.png" height="110" src="https://www.qr-online.pl/bin/qr/7608a0a9319f79f95fb5346d5f6e3466.png" width="110"/> ​</span></p>
 
-  Temporarily hardcoding for the first one
-    
-  """
-  special_case = item[0]
-  r = Reception()
-  r.address = normalize(special_case.get_text(strip=True, separator=' '))
-  gmaps = special_case.find('a', href=True)
-  
-  if gmaps:
-    r.name = normalize(gmaps.find('span').get_text(strip=True))
-    r.lat, r.lon = gmaps_url_to_lat_lon(gmaps['href'])
+    Temporarily hardcoding for the first one
 
-  img = special_case.find('img', src=True)
-  if img:
-    r.qr = img['src']
-  recep_arr.append(r)
-  item.pop(0)
-  # TODO: Remove the entire above block if and when they fix the formatting on the site.
-  
-  count = 0
-  for i in item:
-    if count %2 == 0:
-      r = Reception()
-      r.address = normalize(i.get_text(strip=True, separator=' '))
-      gmaps = i.find('a', href=True)
-      if gmaps:
+    """
+    special_case = item[0]
+    r = Reception()
+    r.address = normalize(special_case.get_text(strip=True, separator=' '))
+    gmaps = special_case.find('a', href=True)
+
+    if gmaps:
         r.name = normalize(gmaps.find('span').get_text(strip=True))
-        if "!3d" in gmaps['href']:
-          r.lat, r.lon = gmaps_url_to_lat_lon(gmaps['href'])
+        r.lat, r.lon = gmaps_url_to_lat_lon(gmaps['href'])
+
+    img = special_case.find('img', src=True)
+    if img:
+        r.qr = img['src']
+    recep_arr.append(r)
+    item.pop(0)
+    # TODO: Remove the entire above block if and when they fix the formatting on the site.
+
+    count = 0
+    for i in item:
+        if count %2 == 0:
+            r = Reception()
+            r.address = normalize(i.get_text(strip=True, separator=' '))
+            gmaps = i.find('a', href=True)
+            if gmaps:
+                r.name = normalize(gmaps.find('span').get_text(strip=True))
+                if "!3d" in gmaps['href']:
+                    r.lat, r.lon = gmaps_url_to_lat_lon(gmaps['href'])
+                else:
+                    break
+                recep_arr.append(r)
         else:
-          break
-        recep_arr.append(r)
-    else:
-      # Get from the end of array,
-      img = i.find('img', src=True)
-      if img:
-        recep_arr[-1].qr = img['src']
-      
-    count += 1
-  return recep_arr
+            # Get from the end of array,
+            img = i.find('img', src=True)
+            if img:
+                recep_arr[-1].qr = img['src']
+
+        count += 1
+    return recep_arr
