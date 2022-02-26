@@ -124,16 +124,13 @@ def get_reception_points_pl(soup):
 
     count = 0
     for i in item:
-        if count %2 == 0:
+        if count % 2 == 0:
             r = Reception()
             r.address = normalize(i.get_text(strip=True, separator=' '))
             gmaps = i.find('a', href=True)
             if gmaps:
                 r.name = normalize(gmaps.find('span').get_text(strip=True))
-                if "!3d" in gmaps['href']:
-                    r.lat, r.lon = gmaps_url_to_lat_lon(gmaps['href'])
-                else:
-                    break
+                r.lat, r.lon = gmaps_url_to_lat_lon(gmaps['href'])
                 recep_arr.append(r)
         else:
             # Get from the end of array,
