@@ -41,7 +41,7 @@ def configure_headers():
   #
   # Check whether file exists on the system or not and whether it's a file or a directory.
   #
-  if not os.path.exists(xml_settings_file) or not path.isfile(xml_settings_file):
+  if not os.path.exists(xml_settings_file) or not os.path.isfile(xml_settings_file):
     return "The file doesn't exist on the system."
 
   #
