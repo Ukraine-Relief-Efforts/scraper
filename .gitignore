@@ -1,5 +1,5 @@
 env/
 *.log
 __pycache__/
-outputs/*.json
+outputs
 *.zip
