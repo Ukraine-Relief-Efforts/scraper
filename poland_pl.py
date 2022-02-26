@@ -1,58 +1,20 @@
-import json
+import os
 import requests
-import unicodedata
 from bs4 import BeautifulSoup
+from utils.reception import Reception
+from utils.constants import POLAND_PL_URL, HEADERS, OUTPUT_DIR
+from utils.utils import write_to_json, normalize
 
 HEADERS = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0'}
 POLAND_URL = 'https://www.gov.pl/web/udsc/ukraina2'
 
-class Reception:
-  def __init__(self):
-    self._location = ""
-    self._qr = ""
-    self._gmaps = ""
-    
-  def __str__(self):
-    nl='\n'
-    return f"Location: {self._location}{nl} QR: {self.qr}{nl} GMaps:{self._gmaps}{nl}===="
-  
-  @property
-  def location(self):
-    return self._location
-
-  @location.setter
-  def location(self, loc):
-    self._location = loc
-  
-  @property
-  def qr(self):
-    return self._qr
-
-  @qr.setter
-  def qr(self, qr):
-    self._qr = qr
-    
-  @property
-  def gmaps(self):
-    return self._gmaps
-
-  @gmaps.setter
-  def gmaps(self, gmaps):
-    self._gmaps = gmaps
-
-
 """Runs the scraping logic."""
-def scrape():
+def scrape_poland_pl():
   content = get_website_content()
   core = get_core(content)
   reception_arr = get_reception_points(content)
-  write_to_json(core, reception_arr)
-
-
-"""Normalizes the provided text. This is needed to get rid of weird entries like \xa0."""
-def normalize(text):
-  return unicodedata.normalize("NFKD", text)
-
+  path = os.path.join(OUTPUT_DIR, 'poland_pl.json')
+  write_to_json(path, core, reception_arr, POLAND_PL_URL)
 
 """Gets the website content with BS4."""
 def get_website_content():
@@ -121,21 +83,3 @@ def get_reception_points(soup):
       
     count += 1
   return recep_arr
-
-
-def write_to_json(core, reception_arr):
-  reception = []
-  for rec in reception_arr:
-    reception.append({
-      "qr": rec.qr,
-      "gmaps": rec.gmaps,
-      "address": rec.location,
-    })
-    
-  data = {'general': core, 'reception': reception}
-
-  with open('poland.json', 'w', encoding='utf-8') as f:
-    json.dump(data, f, indent=2, ensure_ascii=False)
-
-
-scrape()
