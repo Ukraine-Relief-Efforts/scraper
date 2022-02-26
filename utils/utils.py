@@ -19,9 +19,11 @@ def write_to_json(filename, text_arr, reception_arr, source):
   reception = []
   for rec in reception_arr:
     reception.append({
+      "name": rec.name,
+      "lat": rec.lat,
+      "lon": rec.lon,
+      "address": rec.address,
       "qr": rec.qr,
-      "gmaps": rec.gmaps,
-      "address": rec.location,
     })
   data = {"general": text_arr, "reception": reception, "source": source}
   with open(filename, "w", encoding="utf-8") as f:

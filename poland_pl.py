@@ -1,7 +1,10 @@
 import os
 from utils.reception import Reception
-from utils.constants import POLAND_PL_URL, OUTPUT_DIR
+from utils.constants import OUTPUT_DIR
 from utils.utils import get_website_content, write_to_json, normalize
+
+POLAND_PL_URL = 'https://www.gov.pl/web/udsc/ukraina2'
+POLAND_EN_URL = 'https://www.gov.pl/web/udsc/ukraina-en'
 
 """Runs the scraping logic."""
 def scrape_poland_pl():
@@ -20,6 +23,9 @@ def get_core(content):
     text_arr.append(normalize(item.get_text(strip=True, separator=' ')))
   return text_arr
 
+"""Converts a Google maps URL string into latitude and longitude."""
+def gmaps_url_to_lat_lon(url):
+  return url.split("!3d")[1].split("!4d")
 
 """Gets the list of reception points."""
 def get_reception_points(soup):
@@ -44,11 +50,13 @@ def get_reception_points(soup):
   """
   special_case = item[0]
   r = Reception()
-  r.location = normalize(special_case.get_text(strip=True, separator=' '))
+  r.address = normalize(special_case.get_text(strip=True, separator=' '))
   gmaps = special_case.find('a', href=True)
   
   if gmaps:
-    r.gmaps = gmaps['href']
+    r.name = normalize(gmaps.find('span').get_text(strip=True))
+    r.lat, r.lon = gmaps_url_to_lat_lon(gmaps['href'])
+
   img = special_case.find('img', src=True)
   if img:
     r.qr = img['src']
@@ -60,10 +68,11 @@ def get_reception_points(soup):
   for i in item:
     if count %2 == 0:
       r = Reception()
-      r.location = normalize(i.get_text(strip=True, separator=' '))
+      r.address = normalize(i.get_text(strip=True, separator=' '))
       gmaps = i.find('a', href=True)
       if gmaps:
-        r.gmaps = gmaps['href']
+        r.name = normalize(gmaps.find('span').get_text(strip=True))
+        r.lat, r.lon = gmaps_url_to_lat_lon(gmaps['href'])
         recep_arr.append(r)
     else:
       # Get from the end of array,
