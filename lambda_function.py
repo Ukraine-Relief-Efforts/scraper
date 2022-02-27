@@ -30,7 +30,19 @@ def lambda_handler(event, context):
         elif country == "romania-ro":
             romania_scraper.scrape(event)
     else:
-        poland_scraper.scrape(event)
-        hungary_scraper.scrape(event)
-        moldova_scraper.scrape(event)
-        romania_scraper.scrape(event)
+        try:
+            poland_scraper.scrape(event)
+        except:
+            print("An error occurred with the Poland Scrapper")
+        try:
+            hungary_scraper.scrape(event)
+        except:
+            print("An error occurred with the Hungary Scrapper")
+        try:
+            moldova_scraper.scrape(event)
+        except:
+            print("An error occurred with the Moldova Scrapper")
+        try:
+            romania_scraper.scrape(event)
+        except:
+            print("An error occurred with the Romania Scrapper")
