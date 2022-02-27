@@ -84,7 +84,8 @@ def test_scrape_hungary_hu(put_item, check_common):
     hungary_scraper = HungaryScraper()
     hungary_scraper.scrape()
     item, general, reception = check_common('hungary-hu')
-    assert len(general) == 100
+    # Checking that we're over 30 entries in. It was at 100 before we were removing duplicates and before when we were using pykml to parse data.
+    assert len(general) >= 30
 
     # First
     assert 'Határátlépéssel kapcsolatos általános információk' in general
