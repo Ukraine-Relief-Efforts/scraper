@@ -1,0 +1,26 @@
+name: deploy to lambda
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+
+  deploy:
+    name: deploy lambda function
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Build binary
+      run: cd scrapper && zip deployment.zip ./*
+    - name: AWS Lambda Deploy
+      uses: appleboy/lambda-action@master
+      with:
+        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws_region: ${{ secrets.AWS_REGION }}
+        function_name: webScrapers
+        zip_file: webScrapers.zip
+        dry_run: true
