@@ -35,4 +35,8 @@ def _get_reception_points():
     """Get map KML"""
     kml_str = requests.get(HUNGARY_KML, headers=HEADERS).content
     kml = xmltodict.parse(kml_str, dict_constructor=dict)
-    return get_reception_points(kml=kml, style_urls_to_skip=["#icon-1581-E65100", "#icon-1581-F57C00-nodesc"])
+    return get_reception_points(
+        kml=kml,
+        folder_name_whitelist=["Border crossing point"],
+        style_urls_blacklist=["#icon-1581-E65100", "#icon-1581-F57C00-nodesc"],
+    )

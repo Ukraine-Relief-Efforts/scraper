@@ -19,26 +19,29 @@ def get_website_content(url, headers=HEADERS):
   website = requests.get(url, headers=headers)
   return BeautifulSoup(website.content, 'html.parser')
 
-def get_reception_points(kml: dict, style_urls_to_skip: Optional[list[str]]):
+def get_reception_points(
+        kml: dict,
+        folder_name_whitelist: Optional[list[str]]=None,
+        style_urls_blacklist: Optional[list[str]]=None,
+):
+  if style_urls_blacklist is None:
+    style_urls_blacklist = []
+  reception_points: list[Reception] = []
   folders = kml["kml"]["Document"]["Folder"]
   for folder in folders:
-    if "Border crossing point" in folder["name"]:
-      return get_placemarks(folder, style_urls_to_skip)
-
-
-def get_placemarks(folder: dict, style_urls_to_skip: Optional[list[str]]) -> list[Reception]:
-  if style_urls_to_skip is None:
-    style_urls_to_skip = []
-  reception_points: list[Reception] = []
-  placemarks: dict = folder["Placemark"]
-  for placemark in placemarks:
-    if placemark["styleUrl"] not in style_urls_to_skip:
-      r = Reception()
-      r.name = placemark["name"]
-      coord = placemark["Point"]["coordinates"].split(',')
-      r.lon = coord[0].strip()
-      r.lat = coord[1].strip()
-      reception_points.append(r)
+    if folder_name_whitelist is not None and any(
+            value in normalize(folder["name"])
+            for value in folder_name_whitelist
+    ):
+      placemarks: dict = folder["Placemark"]
+      for placemark in placemarks:
+        if placemark["styleUrl"] not in style_urls_blacklist:
+          r = Reception()
+          r.name = normalize(placemark["name"])
+          coord = placemark["Point"]["coordinates"].split(',')
+          r.lon = coord[0].strip()
+          r.lat = coord[1].strip()
+          reception_points.append(r)
   return reception_points
 
 def gmaps_url_to_lat_lon(url):
