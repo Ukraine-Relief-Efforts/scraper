@@ -11,14 +11,7 @@ from scrapers.moldova_ro import scrape_moldova_ro
 
 def lambda_handler(event, context):
     """Call all scrapers."""
-    print("Scraping Poland (PL)")
     scrape_poland_pl()
-
-    print("Scraping Poland (EN)")
     scrape_poland_en()
-
-    print("Scraping Hungary (HU)")
     scrape_hungary_hu()
-
-    print("Scraping Moldova (RO)")
     scrape_moldova_ro()
