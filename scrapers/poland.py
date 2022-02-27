@@ -10,9 +10,9 @@ POLAND_UA_URL = 'https://www.gov.pl/web/udsc/ukraina---ua'
 class PolandScraper(BaseScraper):
 
     def scrape(self, event = ""):
-        self.scrape_poland_pl()
-        self.scrape_poland_en()
-        self.scrape_poland_ua()
+        self.scrape_poland_pl(event)
+        self.scrape_poland_en(event)
+        self.scrape_poland_ua(event)
 
     def scrape_poland_pl(self, event = ""):
         print("Scraping Poland (PL)")
