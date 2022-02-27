@@ -12,8 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
-    - name: Build binary
-      run: cd scrapper && zip deployment.zip ./*
+    - name: Package Zip
+      run: zip deployment.zip ./*
     - name: AWS Lambda Deploy
       uses: appleboy/lambda-action@master
       with:
