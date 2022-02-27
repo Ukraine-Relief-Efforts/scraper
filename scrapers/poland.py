@@ -1,28 +1,29 @@
 import os
 from utils.reception import Reception
 from utils.constants import OUTPUT_DIR
-from utils.utils import get_website_content, gmaps_url_to_lat_lon, write_to_json, normalize
+from utils.utils import get_website_content, gmaps_url_to_lat_lon, normalize
+from utils.dynamo import write_to_dynamo
 
 POLAND_EN_URL = 'https://www.gov.pl/web/udsc/ukraina-en'
 POLAND_PL_URL = 'https://www.gov.pl/web/udsc/ukraina2'
 POLAND_UA_URL = 'https://www.gov.pl/web/udsc/ukraina---ua'
 
 def scrape_poland_pl():
-    print("Scraping Poland (PL)")
-
     """calls scrape_poland with the appropriate arguments for the pl website"""
+
+    print("Scraping Poland (PL)")
     scrape_poland(POLAND_PL_URL, 'pl')
 
 def scrape_poland_en():
-    print("Scraping Poland (EN)")
-
     """calls scrape_poland with the appropriate arguments for the en website"""
+
+    print("Scraping Poland (EN)")
     scrape_poland(POLAND_EN_URL, 'en')
 
 def scrape_poland_ua():
-    print("Scraping Poand (UA)")
-    
     """calls scrape_poland with the appropriate arguments for the ua website"""
+
+    print("Scraping Poand (UA)")
     scrape_poland(POLAND_UA_URL, 'ua')
 
 def get_core(content, locale):
@@ -44,8 +45,7 @@ def scrape_poland(url, locale):
     elif locale == "en":
         reception_arr = get_reception_points_en(content)
 
-    path = os.path.join(OUTPUT_DIR, f'poland_{locale}.json')
-    write_to_json(path, core, reception_arr, url)
+    write_to_dynamo(f"poland-{locale}", core, reception_arr, url)
 
 def get_reception_points_en(soup):
     """Gets the list of reception points."""
