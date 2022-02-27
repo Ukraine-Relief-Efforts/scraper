@@ -1,6 +1,7 @@
 """Functionality related to DynamoDB."""
 
 import boto3
+from datetime import datetime
 
 TABLE_NAME = "TechForUkraine-CIG"
 
@@ -16,9 +17,13 @@ def write_to_dynamo(country: str, general: list, reception: list, source: str):
         reception (list): Border crossing points.
     """
 
+    # Remove duplicate strings and create entries into the 'general' attribute of the dynamo item/object
+    uniqueGeneralList = []
     general_list = []
     for line in general:
-        general_list.append({ "S": line })
+        if line not in uniqueGeneralList:
+            uniqueGeneralList.append(line)
+            general_list.append({ "S": line })
 
     reception_list = []
     for rec in reception:
@@ -38,5 +43,6 @@ def write_to_dynamo(country: str, general: list, reception: list, source: str):
             "country": { "S": country },
             "general": { "L": general_list },
             "reception": { "L": reception_list },
-            "source": { "S": source }
+            "source": { "S": source },
+            "timeScrapped": { "S": datetime.now() }
         })

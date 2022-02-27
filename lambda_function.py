@@ -13,8 +13,19 @@ moldova_scraper = MoldovaScraper()
 
 def lambda_handler(event, context):
     """Call all scrapers."""
-    poland_scraper.scrape_poland_en()
-    poland_scraper.scrape_poland_pl()
-    poland_scraper.scrape_poland_ua()
-    hungary_scraper.scrape()
-    moldova_scraper.scrape()
+    if 'country' in event:
+        country = event["country"]
+        if country == "poland-en":
+            poland_scraper.scrape_poland_en()
+        elif country == "poland-pl":
+            poland_scraper.scrape_poland_pl()
+        elif country == "poland-ua":
+            poland_scraper.scrape_poland_ua()
+        elif country == "hungary-hu":
+            hungary_scraper.scrape()
+        elif country == "moldova-ro":
+            moldova_scraper.scrape()
+    else:
+        poland_scraper.scrape()
+        hungary_scraper.scrape()
+        moldova_scraper.scrape()
