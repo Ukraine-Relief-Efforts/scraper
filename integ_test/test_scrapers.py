@@ -3,11 +3,10 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 import utils.dynamo
-from scrapers.hungary_hu import scrape_hungary_hu
-from scrapers.moldova_ro import scrape_moldova_ro
-from scrapers.poland import scrape_poland_en, scrape_poland_pl
-from scrapers.poland_en import scrape_poland_en
-from scrapers.poland_pl import scrape_poland_pl
+from scrapers.hungary_hu import HungaryScraper
+from scrapers.moldova_ro import MoldovaScraper
+from scrapers.poland import PolandScraper
+from scrapers.poland_en import PolandENScraper
 
 
 @pytest.fixture(autouse=True)
@@ -69,19 +68,25 @@ def check_common(put_item):
 
 
 def test_poland_pl(put_item, check_common):
-    scrape_poland_pl()
-    check_common('poland-pl-test')
-
+    poland_scraper = PolandScraper()
+    poland_scraper.scrape_poland_pl()
+    check_common('poland-pl')
 
 def test_poland_en(put_item, check_common):
-    scrape_poland_en()
-    check_common('poland-en-test')
+    poland_scraper = PolandScraper()
+    poland_scraper.scrape_poland_en()
+    check_common('poland-en')
 
+def test_poland_ua(put_item, check_common):
+    poland_scraper = PolandScraper()
+    poland_scraper.scrape_poland_ua()
+    check_common('poland-ua')
 
 def test_scrape_hungary_hu(put_item, check_common):
     # This one's too big...just doing a spot check
-    scrape_hungary_hu()
-    item, general, reception = check_common('hungary-hu-test')
+    hungary_scraper = HungaryScraper()
+    hungary_scraper.scrape()
+    item, general, reception = check_common('hungary-hu')
     assert len(general) == 100
 
     # First
@@ -101,9 +106,11 @@ def test_scrape_hungary_hu(put_item, check_common):
     assert reception[2] == {'name': 'Murakeresztúr Vasúti Határátkelőhely', 'lat': '46.358938', 'lon': '16.85126', 'address': '', 'qr': ''}
     assert reception[-1] == {'name': 'Garbolc - Bercu', 'lat': '47.9448241', 'lon': '22.8628', 'address': '', 'qr': ''}
 
+#FIXME: This is broken, looks like the ordering is different than expected, I'm getting address first and name last
 def test_scrape_moldova_ro(put_item, check_common):
-    scrape_moldova_ro()
-    item, general, reception = check_common('moldova-ro-test')
+    moldova_scraper = MoldovaScraper()
+    moldova_scraper.scrape()
+    item, general, reception = check_common('moldova-ro')
     # I do not know what this means, but for the moment, we don't want it to
     # change significantly.
     assert general == [

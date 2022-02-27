@@ -1,4 +1,5 @@
 
+from multiprocessing import Process
 from pathlib import Path
 from scrapers.poland import PolandScraper
 from scrapers.moldova_ro import MoldovaScraper
@@ -28,23 +29,29 @@ if __name__=="__main__":
     poland_scraper = PolandScraper()
     hungary_scraper = HungaryScraper()
     moldova_scraper = MoldovaScraper()
+    process_list = []
     if switch_country(country) == "ALL":
-        poland_scraper.scrape()
-        hungary_scraper.scrape()
-        moldova_scraper.scrape()
+        process_list.append(Process(target=poland_scraper.scrape))
+        process_list.append(Process(target=hungary_scraper.scrape))
+        process_list.append(Process(target=moldova_scraper.scrape))
 
     if switch_country(country) == "PL_PL":
-        poland_scraper.scrape_poland_pl()
+        process_list.append(Process(target=poland_scraper.scrape_poland_pl))
 
     if switch_country(country) == "PL_EN":
-        poland_scraper.scrape_poland_en()
+        process_list.append(Process(target=poland_scraper.scrape_poland_en))
 
     if switch_country(country) == "PLA_UA":
-        poland_scraper.scrape_poland_ua()
+        process_list.append(Process(target=poland_scraper.scrape_poland_ua))
 
     if switch_country(country) == "MD_MD":
-        moldova_scraper.scrape()
+        process_list.append(Process(target=moldova_scraper.scrape))
 
     if switch_country(country) == "HU_HU":
-        hungary_scraper.scrape()
+        process_list.append(Process(target=hungary_scraper.scrape))
 
+    for process in process_list:
+        process.start()
+
+    for proces in process_list:
+        process.join()

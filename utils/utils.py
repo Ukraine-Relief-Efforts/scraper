@@ -21,8 +21,8 @@ def get_website_content(url, headers=HEADERS):
 
 def get_reception_points(
         kml: dict,
-        folder_name_whitelist: Optional[list[str]]=None,
-        style_urls_blacklist: Optional[list[str]]=None,
+        folder_name_whitelist=None,
+        style_urls_blacklist=None,
 ):
   if style_urls_blacklist is None:
     style_urls_blacklist = []
