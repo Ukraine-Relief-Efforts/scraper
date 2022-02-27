@@ -13,7 +13,7 @@ HUNGARY_KML = "http://www.google.com/maps/d/kml?forcekml=1&mid=1d54nWG4ig0rmBPj3
 
 class HungaryScraper(BaseScraper):
 
-    def scrape(self):
+    def scrape(self, event = ""):
         print("Scraping Hungary (HU)")
 
         """Start with general border info"""
@@ -22,7 +22,7 @@ class HungaryScraper(BaseScraper):
 
         """Get border crossing points"""
         reception_arr = self._get_reception_points()
-        write_to_dynamo("hungary-hu", general, reception_arr, HUNGARY_URL)
+        write_to_dynamo("hungary-hu", event, general, reception_arr, HUNGARY_URL)
 
 
     def _get_general(self, content):

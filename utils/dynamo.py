@@ -2,13 +2,12 @@
 
 import boto3
 from datetime import datetime
-from lambda_function import testSuffix
 
 TABLE_NAME = "TechForUkraine-CIG"
 
 client = boto3.client("dynamodb", region_name="us-east-1")
 
-def write_to_dynamo(country: str, general: list, reception: list, source: str):
+def write_to_dynamo(country: str, event: object, general: list, reception: list, source: str):
     """
     Write the data to DynamoDB.
 
@@ -18,7 +17,16 @@ def write_to_dynamo(country: str, general: list, reception: list, source: str):
         reception (list): Border crossing points.
     """
 
-    countryName = country + testSuffix
+    #######################################################################################################################################
+    # USED FOR TESTING IN LAMBDA. Include 'testSuffix' in your lambda test object so that the dynamo items used in prod are not overwritten
+    if event != "":
+        testSuffix = "" if ('testSuffix' not in event) else event["testSuffix"]
+        country += testSuffix
+    #######################################################################################################################################
+
+    now = datetime.now()
+    dateTimeString = now.strftime('%Y-%m-%d  %X  %z')
+    isoString = now.isoformat()
 
     # Remove duplicate strings and create entries into the 'general' attribute of the dynamo item/object
     uniqueGeneralList = []
@@ -47,5 +55,6 @@ def write_to_dynamo(country: str, general: list, reception: list, source: str):
             "general": { "L": general_list },
             "reception": { "L": reception_list },
             "source": { "S": source },
-            "timeScrapped": { "S": datetime.now() }
+            "isoFormat": { "S": isoString },
+            "dateTime": { "S": dateTimeString }
         })
