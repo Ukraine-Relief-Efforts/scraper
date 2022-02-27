@@ -1,10 +1,10 @@
 import sys
 
+sys.path.insert(0, "./deps")
+
 from scrapers.poland import PolandScraper
 from scrapers.moldova_ro import MoldovaScraper
 from scrapers.hungary_hu import HungaryScraper
-
-sys.path.insert(0, './deps')
 
 poland_scraper = PolandScraper()
 hungary_scraper = HungaryScraper()
