@@ -1,14 +1,20 @@
 import sys
+from scrapers.poland import PolandScraper
+from scrapers.moldova_ro import MoldovaScraper
+from scrapers.hungary_hu import HungaryScraper
+from scrapers.romaina_ro import RomaniaScraper
 
 sys.path.insert(0, "./deps")
 
 from scrapers.poland import PolandScraper
 from scrapers.moldova_ro import MoldovaScraper
 from scrapers.hungary_hu import HungaryScraper
+from scrapers.romaina_ro import RomaniaScraper
 
 poland_scraper = PolandScraper()
 hungary_scraper = HungaryScraper()
 moldova_scraper = MoldovaScraper()
+romania_scraper = RomaniaScraper()
 
 def lambda_handler(event, context):
     """Call all scrapers."""
@@ -25,7 +31,10 @@ def lambda_handler(event, context):
             hungary_scraper.scrape(event)
         elif country == "moldova-ro":
             moldova_scraper.scrape(event)
+        elif country == "romania-ro":
+            romania_scraper.scrape(event)
     else:
         poland_scraper.scrape(event)
         hungary_scraper.scrape(event)
         moldova_scraper.scrape(event)
+        romania_scraper.scrape(event)

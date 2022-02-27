@@ -1,14 +1,10 @@
 import json
 import logging
-from typing import Optional
-
+import unicodedata
 import requests
 from bs4 import BeautifulSoup
 from utils.constants import LOGFILE_PATH, HEADERS
-import unicodedata
-
 from utils.reception import Reception
-
 
 def normalize(text):
   """Normalizes the provided text. This is needed to get rid of weird entries like \xa0."""
@@ -46,7 +42,10 @@ def get_reception_points(
 
 def gmaps_url_to_lat_lon(url):
   """Converts a Google maps URL string into latitude and longitude."""
-  return url.split("!3d")[1].split("!4d")
+  if "!3d" in url:
+    return url.split("!3d")[1].split("!4d")
+  else:
+    return url.split("/")[6].split(",")
 
 def write_to_json(filename, text_arr, reception_arr, source):
   reception = []
