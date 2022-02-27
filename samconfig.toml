@@ -1,1 +1,10 @@
- # I don't know what goes in this file
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "webScraper"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-fd9edrqczc8h"
+s3_prefix = "webScraper"
+region = "us-east-1"
+capabilities = "CAPABILITY_IAM"
+image_repositories = []
