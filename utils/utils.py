@@ -29,19 +29,19 @@ def get_reception_points(
   reception_points: list[Reception] = []
   folders = kml["kml"]["Document"]["Folder"]
   for folder in folders:
-    if folder_name_whitelist is not None and any(
+    if folder_name_whitelist is None or any(
             value in normalize(folder["name"])
             for value in folder_name_whitelist
     ):
-      placemarks: dict = folder["Placemark"]
-      for placemark in placemarks:
-        if placemark["styleUrl"] not in style_urls_blacklist:
-          r = Reception()
-          r.name = normalize(placemark["name"])
-          coord = placemark["Point"]["coordinates"].split(',')
-          r.lon = coord[0].strip()
-          r.lat = coord[1].strip()
-          reception_points.append(r)
+      if "Placemark" in folder.keys():
+        for placemark in folder["Placemark"]:
+          if placemark["styleUrl"] not in style_urls_blacklist:
+            r = Reception()
+            r.name = normalize(placemark["name"])
+            coord = placemark["Point"]["coordinates"].split(',')
+            r.lon = coord[0].strip()
+            r.lat = coord[1].strip()
+            reception_points.append(r)
   return reception_points
 
 def gmaps_url_to_lat_lon(url):
