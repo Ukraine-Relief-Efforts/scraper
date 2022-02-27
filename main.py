@@ -26,7 +26,7 @@ if __name__=="__main__":
     #
     # Default value which is 'ALL'.
     #
-    country = 0
+    country = 6
     poland_scraper = PolandScraper()
     hungary_scraper = HungaryScraper()
     moldova_scraper = MoldovaScraper()

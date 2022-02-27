@@ -59,7 +59,7 @@ class PolandScraper(BaseScraper):
 
         #path = os.path.join(OUTPUT_DIR, f'poland_{locale}.json')
         country = "poland-" + locale
-        write_to_dynamo(country, general, reception_arr, POLAND_PL_URL)
+        write_to_dynamo(country, general, reception_arr, url)
 
     def get_reception_points_en(self, soup):
         """Gets the list of reception points."""
