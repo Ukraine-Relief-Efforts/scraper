@@ -10,7 +10,7 @@ MOLDOVA_KML = "http://www.google.com/maps/d/kml?forcekml=1&mid=1S38hHlp67u7UoFgV
 
 class MoldovaScraper(BaseScraper):
 
-  def scrape(self):
+  def scrape(self, event = ""):
     print("Scraping Moldova (RO)")
 
     """Start with general border info"""
@@ -19,7 +19,7 @@ class MoldovaScraper(BaseScraper):
 
     """Get border crossing points"""
     reception_arr = self._get_reception_points()
-    write_to_dynamo("moldova-ro", general, reception_arr, MOLDOVA_UKRAINE_URL)
+    write_to_dynamo("moldova-ro", event, general, reception_arr, MOLDOVA_UKRAINE_URL)
 
   def get_general(self, content):
     """Gets general border crossing information."""

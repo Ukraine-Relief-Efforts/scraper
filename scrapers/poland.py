@@ -9,28 +9,29 @@ POLAND_UA_URL = 'https://www.gov.pl/web/udsc/ukraina---ua'
 
 class PolandScraper(BaseScraper):
 
-    def scrape(self):
-        self.scrape_poland_pl()
-        self.scrape_poland_en()
-        self.scrape_poland_ua()
+    def scrape(self, event = ""):
+        self.scrape_poland_pl(event)
+        self.scrape_poland_en(event)
+        self.scrape_poland_ua(event)
 
-    def scrape_poland_pl(self):
+    def scrape_poland_pl(self, event = ""):
         print("Scraping Poland (PL)")
 
         """calls scrape_poland with the appropriate arguments for the pl website"""
-        self.scrape_poland(POLAND_PL_URL, 'pl')
+        self.scrape_poland(POLAND_PL_URL, 'pl', event)
 
-    def scrape_poland_en(self):
+    def scrape_poland_en(self, event = ""):
         print("Scraping Poland (EN)")
 
         """calls scrape_poland with the appropriate arguments for the en website"""
-        self.scrape_poland(POLAND_EN_URL, 'en')
+        self.scrape_poland(POLAND_EN_URL, 'en', event)
 
-    def scrape_poland_ua(self):
-        print("Scraping Poland (UA)")
+    def scrape_poland_ua(self, event = ""):
+        print("Scraping Poand (UA)")
+
 
         """calls scrape_poland with the appropriate arguments for the ua website"""
-        self.scrape_poland(POLAND_UA_URL, 'ua')
+        self.scrape_poland(POLAND_UA_URL, 'ua', event)
 
     def get_core(self, content, locale):
         """Gets the content from a bullet points list of general information for Ukrainian citizens."""
@@ -42,7 +43,7 @@ class PolandScraper(BaseScraper):
             text_arr.append(normalize(item.get_text(strip=True, separator=' ')))
         return text_arr
 
-    def scrape_poland(self, url, locale):
+    def scrape_poland(self, url, locale, event):
         """Runs the scraping logic."""
         content = get_website_content(url)
         general = self.get_core(content, locale)
@@ -53,7 +54,7 @@ class PolandScraper(BaseScraper):
 
         #path = os.path.join(OUTPUT_DIR, f'poland_{locale}.json')
         country = "poland-" + locale
-        write_to_dynamo(country, general, reception_arr, POLAND_PL_URL)
+        write_to_dynamo(country, event, general, reception_arr, POLAND_PL_URL)
 
     def get_reception_points_en(self, soup):
         """Gets the list of reception points."""

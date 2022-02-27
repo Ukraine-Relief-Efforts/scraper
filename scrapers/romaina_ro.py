@@ -7,7 +7,7 @@ ROMANIA_INFO_URL = "https://www.politiadefrontiera.ro/ro/main/pg-conditii-genera
 ROMANIA_MAP_URL = "https://www.politiadefrontiera.ro/ro/traficonline/?dt=1&vw=2"
 
 class RomaniaScraper(BaseScraper):
-    def scrape(self):
+    def scrape(self, event = ""):
         print("Scraping Romania (RO)")
 
         """Start with general border info"""
@@ -16,7 +16,7 @@ class RomaniaScraper(BaseScraper):
 
         """Get border crossing points"""
         reception_arr = self._get_reception_points(ROMANIA_MAP_URL)
-        write_to_dynamo("romania-ro", general, reception_arr, ROMANIA_INFO_URL)
+        write_to_dynamo("romania-ro", event, general, reception_arr, ROMANIA_INFO_URL)
 
     def get_general(self, content):
         """Gets general border crossing information."""
