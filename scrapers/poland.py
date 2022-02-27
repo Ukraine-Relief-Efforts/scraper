@@ -108,7 +108,8 @@ class PolandScraper(BaseScraper):
     def get_reception_points_pl(self, soup):
         """Gets the list of reception points."""
         item = soup.find('div', class_="editor-content").findAll('p')
-        item = item[1:]
+        item = item[4:] #this number is likely to change (I think)
+                        # TODO detect it automatically
 
         recep_arr = []
         """
@@ -142,8 +143,7 @@ class PolandScraper(BaseScraper):
         item.pop(0)
         # TODO: Remove the entire above block if and when they fix the formatting on the site.
 
-        count = 0
-        for i in item:
+        for count, i in enumerate(item):
             if count % 2 == 0:
                 r = Reception()
                 r.address = normalize(i.get_text(strip=True, separator=' '))
