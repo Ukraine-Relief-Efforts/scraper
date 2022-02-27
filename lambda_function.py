@@ -10,9 +10,15 @@ poland_scraper = PolandScraper()
 hungary_scraper = HungaryScraper()
 moldova_scraper = MoldovaScraper()
 
+testSuffix = ""
 
 def lambda_handler(event, context):
     """Call all scrapers."""
+    #######################################################################################################################################
+    # USED FOR TESTING IN LAMBDA. Include 'testSuffix' in your lambda test object so that the dynamo items used in prod are not overwritten
+    testSuffix = "" if ('testSuffix' not in event) else event["testSuffix"]
+    #######################################################################################################################################
+
     if 'country' in event:
         country = event["country"]
         if country == "poland-en":

@@ -2,6 +2,7 @@
 
 import boto3
 from datetime import datetime
+from lambda_function import testSuffix
 
 TABLE_NAME = "TechForUkraine-CIG"
 
@@ -16,6 +17,8 @@ def write_to_dynamo(country: str, general: list, reception: list, source: str):
         general (list[str]): More general information.
         reception (list): Border crossing points.
     """
+
+    countryName = country + testSuffix
 
     # Remove duplicate strings and create entries into the 'general' attribute of the dynamo item/object
     uniqueGeneralList = []
