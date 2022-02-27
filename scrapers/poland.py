@@ -4,8 +4,9 @@ from scrapers.base_scraper import BaseScraper
 
 from utils.reception import Reception
 from utils.constants import OUTPUT_DIR
+from utils.utils import get_website_content, gmaps_url_to_lat_lon, normalize
 from utils.dynamo import write_to_dynamo
-from utils.utils import get_website_content, gmaps_url_to_lat_lon, write_to_json, normalize
+
 
 POLAND_EN_URL = 'https://www.gov.pl/web/udsc/ukraina-en'
 POLAND_PL_URL = 'https://www.gov.pl/web/udsc/ukraina2'
