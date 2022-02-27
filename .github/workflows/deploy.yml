@@ -13,7 +13,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Package Zip
-      run: zip deployment.zip ./*
+      run: zip webScrapers.zip ./*
     - name: AWS Lambda Deploy
       uses: appleboy/lambda-action@master
       with:
