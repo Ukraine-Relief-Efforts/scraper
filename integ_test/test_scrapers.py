@@ -84,7 +84,7 @@ def test_scrape_hungary_hu(put_item, check_common):
     hungary_scraper = HungaryScraper()
     hungary_scraper.scrape()
     item, general, reception = check_common('hungary-hu')
-    # Checking that we're over 30 entries in. It was at 100 before we were removing duplicates and before when we were using pykml to parse data.
+    # This is just a check to make sure we were scraping a minimal amount of data that suggests the website didn't drastically change format
     assert len(general) >= 30
 
     # First
