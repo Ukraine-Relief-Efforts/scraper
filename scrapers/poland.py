@@ -162,5 +162,4 @@ class PolandScraper(BaseScraper):
                 if img:
                     recep_arr[-1].qr = img['src']
 
-            count += 1
         return recep_arr
