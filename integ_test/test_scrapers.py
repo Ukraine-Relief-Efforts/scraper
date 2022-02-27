@@ -84,7 +84,8 @@ def test_scrape_hungary_hu(put_item, check_common):
     hungary_scraper = HungaryScraper()
     hungary_scraper.scrape()
     item, general, reception = check_common('hungary-hu')
-    assert len(general) == 100
+    # This is just a check to make sure we were scraping a minimal amount of data that suggests the website didn't drastically change format
+    assert len(general) >= 30
 
     # First
     assert 'Határátlépéssel kapcsolatos általános információk' in general
