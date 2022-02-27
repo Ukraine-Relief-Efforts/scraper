@@ -17,6 +17,6 @@ jobs:
           aws-secret-access-key: '${{ secrets.AWS_SECRET_ACCESS_KEY }}'
           aws-region: 'us-east-1'
       # Build using SAM
-      - run: sam build --use-container --template-file sam-app/template.yaml
+      - run: sam build --use-container --template-file template.yml
       # Deploy on AWS
       - run: sam deploy --no-fail-on-empty-changeset
