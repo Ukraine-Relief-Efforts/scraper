@@ -1,7 +1,5 @@
 import requests
 import xmltodict
-
-
 from scrapers.base_scraper import BaseScraper
 from utils.dynamo import write_to_dynamo
 from utils.constants import HEADERS
@@ -9,7 +7,6 @@ from utils.utils import get_reception_points, get_website_content, normalize
 
 MOLDOVA_UKRAINE_URL = "https://www.border.gov.md/ro/ucraina"
 MOLDOVA_KML = "http://www.google.com/maps/d/kml?forcekml=1&mid=1S38hHlp67u7UoFgVGFC-GCU2Efsn6WeC"
-
 
 class MoldovaScraper(BaseScraper):
 
