@@ -6,11 +6,13 @@ POLAND_PL_URL = 'https://www.gov.pl/web/udsc/ukraina2'
 
 
 def scrape_poland_pl():
+  print("Scraping Poland (PL)")
+  
   """Runs the scraping logic."""
   content = get_website_content(POLAND_PL_URL)
   general = get_general(content)
   reception_arr = get_reception_points(content)
-  write_to_dynamo("poland-pl-test", general, reception_arr, POLAND_PL_URL)
+  write_to_dynamo("poland-pl", general, reception_arr, POLAND_PL_URL)
 
 
 def get_general(content):
