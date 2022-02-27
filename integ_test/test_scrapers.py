@@ -79,11 +79,10 @@ def test_poland_en(put_item, check_common):
 
 
 def test_scrape_hungary_hu(put_item, check_common):
+    # This one's too big...just doing a spot check
     scrape_hungary_hu()
     item, general, reception = check_common('hungary-hu-test')
-    # print(len(general))
     assert len(general) == 100
-    # print(general)
 
     # First
     assert 'Határátlépéssel kapcsolatos általános információk' in general
@@ -105,7 +104,6 @@ def test_scrape_hungary_hu(put_item, check_common):
 def test_scrape_moldova_ro(put_item, check_common):
     scrape_moldova_ro()
     item, general, reception = check_common('moldova-ro-test')
-    print(reception)
     # I do not know what this means, but for the moment, we don't want it to
     # change significantly.
     assert general == [
