@@ -1,4 +1,6 @@
+import logging
 import sys
+
 sys.path.insert(0, "./deps")
 
 # Additional imports
@@ -30,19 +32,13 @@ def lambda_handler(event, context):
         elif country == "romania-ro":
             romania_scraper.scrape(event)
     else:
-        try:
-            poland_scraper.scrape(event)
-        except:
-            print("An error occurred with the Poland Scrapper")
-        try:
-            hungary_scraper.scrape(event)
-        except:
-            print("An error occurred with the Hungary Scrapper")
-        try:
-            moldova_scraper.scrape(event)
-        except:
-            print("An error occurred with the Moldova Scrapper")
-        try:
-            romania_scraper.scrape(event)
-        except:
-            print("An error occurred with the Romania Scrapper")
+        for scraper in [
+            poland_scraper,
+            hungary_scraper,
+            moldova_scraper,
+            romania_scraper
+        ]:
+            try:
+                scraper.scrape(event)
+            except Exception:
+                logging.exception('An error was encountered during scraping.')
