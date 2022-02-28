@@ -1,13 +1,22 @@
 # Scraper for Ukraine Centralized Information Guide
 
-Desired Information:
+## Project Board [Here](https://github.com/orgs/Ukraine-Relief-Efforts/projects/1/views/6)
+
+
+
+## Desired Information:
+
 1. General guidelines
 2. Reception points
 3. Map link
 
-Data exported in json
+We have some sample data exported in json below, but we now write our data to
+DynamoDB.  Do not attempt to write json to the file system, which is mostly
+read-only.
+
 Format (TBC):
 * Poland:
+
 ```json
 // JSON format.
 {
@@ -49,3 +58,51 @@ Format (TBC):
 
 * Moldova border crossing info:
     * https://www.border.gov.md/index.php/informare
+
+
+# Testing
+
+We've got some basic integration tests put together for the scrapers.  They'll
+scrape the real websites and do some sanity checks, but won't actually write to
+dynamo.  You'll need tox:
+
+```sh
+pip install tox
+```
+
+Then, from the project directory:
+
+```sh
+tox
+```
+
+# Dependency Management
+
+Dependencies are tracked in requirements.txt.  If you want to install locally,
+you can do:
+
+```sh
+pip install -r requirements.txt
+```
+
+These dependencies are stored on an AWS layer in production.  This shouldn't
+matter to you, but someone ought to know :)
+
+## Adding Dependencies
+
+If you add a dependency, pop in in requirements.txt.  Make sure you run the
+tests.  And try to run your stuff in AWS, too, which may not play quite as
+nicely with some libraries as your local machine does.  Be mindful of the size
+of your dependencies, as there are size limits of the combined code and layer
+that hosts our dependencies.
+
+# Testing with AWS
+
+You'll want to zip up the entire project folder (but not the folder itself) and
+upload that to a Lambda function, then hit the "Test" button.  You'll need to
+get AWS access from someone on the Discord channel.
+
+# Style
+
+We (will) use Black to enforce a consistent style.  This will run in CI, and
+will apparently be available as a Git hook (once the PR makes it in).

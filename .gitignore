@@ -1,5 +1,9 @@
+venv
 env/
+dependencies
 *.log
 __pycache__/
-outputs/*.json
+outputs
 *.zip
+.tox
+.DS_Store
