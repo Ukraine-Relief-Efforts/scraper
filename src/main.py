@@ -2,6 +2,7 @@ from scrapers.poland import PolandScraper
 from scrapers.moldova_ro import MoldovaScraper
 from scrapers.hungary_hu import HungaryScraper
 from scrapers.romaina_ro import RomaniaScraper
+from scrapers.romania_en_shelter_food import RomaniaRefugeeCenterScraper
 
 #
 # Country switch.
@@ -24,11 +25,12 @@ if __name__ == "__main__":
     #
     # Default value which is 'ALL'.
     #
-    country = 0
+    country = 6
     poland_scraper = PolandScraper()
     hungary_scraper = HungaryScraper()
     moldova_scraper = MoldovaScraper()
     romania_scraper = RomaniaScraper()
+    romania_refugee_center = RomaniaRefugeeCenterScraper()
 
     if switch_country(country) == "ALL":
         poland_scraper.scrape()
@@ -52,4 +54,5 @@ if __name__ == "__main__":
         hungary_scraper.scrape()
 
     if switch_country(country) == "RO_RO":
-        romania_scraper.scrape()
+        romania_refugee_center.scrape()
+        # romania_scraper.scrape()
