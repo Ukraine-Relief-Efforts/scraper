@@ -1,5 +1,4 @@
 """Functionality related to DynamoDB."""
-
 import boto3
 from datetime import datetime
 
@@ -22,10 +21,27 @@ def write_to_dynamo(
 
     #######################################################################################################################################
     # USED FOR TESTING IN LAMBDA. Include 'testSuffix' in your lambda test object so that the dynamo items used in prod are not overwritten
+    isTesting = False
+    testSuffix = ""
+
     if event != "":
-        testSuffix = "" if ("testSuffix" not in event) else event["testSuffix"]
-        country += testSuffix
+        if ("testSuffix" in event) and (event["testSuffix"] != ""):
+            testSuffix = event["testSuffix"]
+            isTesting = True
     #######################################################################################################################################
+
+    # Get the existing object, that object will be PUT back into dynamo, but marked as 'old' so it can be compared.
+    # The comparison will be used to determine if the translator needs to translate any of the newly scraped data or not.
+    existingItem = get_existing_object(country)
+
+    # If we're testing we're find to GET and object out of dynamo
+    # But we don't want to overwrite the 'old' version of the object that is used for comparison
+    # (which is used to tell us if we need to translate it or not)
+    if isTesting:
+        existingItem["country"]["S"] = existingItem["country"]["S"] + testSuffix
+
+    # Mark the existing item as 'old', then scrape to get the most 'up to date' information.
+    update_existing_item_as_old(existingItem)
 
     now = datetime.now()
     dateTimeString = now.strftime("%Y-%m-%d  %X  %z")
@@ -53,10 +69,13 @@ def write_to_dynamo(
             }
         )
 
+    # If we're testing, we don't want to mess with exiting data that is being used by the website
+    # So we write whatever we've scraped with a name that has a suffix defined in the lambda event.
+    countryName = (country + testSuffix) if isTesting else country
     client.put_item(
         TableName=TABLE_NAME,
         Item={
-            "country": {"S": country},
+            "country": {"S": countryName},
             "general": {"L": general_list},
             "reception": {"L": reception_list},
             "source": {"S": source},
@@ -64,3 +83,19 @@ def write_to_dynamo(
             "dateTime": {"S": dateTimeString},
         },
     )
+
+
+# Get the item from dynamo
+def get_existing_object(country: str):
+    print("Getting dynamo object for country " + country)
+    return client.get_item(TableName=TABLE_NAME, Key={"country": {"S": country}})[
+        "Item"
+    ]
+
+
+# Change item name (appent -old) and PUT the item back in dynamo
+def update_existing_item_as_old(item: object):
+    print("Marking existing country object as 'old'")
+    item["country"]["S"] = item["country"]["S"] + "-old"
+
+    client.put_item(TableName=TABLE_NAME, Item=item)
