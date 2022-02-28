@@ -1,4 +1,3 @@
-
 from multiprocessing import Process
 from scrapers.poland import PolandScraper
 from scrapers.moldova_ro import MoldovaScraper
@@ -16,12 +15,13 @@ def switch_country(country):
         3: "PL_UA",
         4: "MD_MD",
         5: "HU_HU",
-        6: "RO_RO"
+        6: "RO_RO",
     }
 
     return country_switch.get(country, "ALL")
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     #
     # Default value which is 'ALL'.
     #
@@ -52,7 +52,7 @@ if __name__=="__main__":
 
     if switch_country(country) == "HU_HU":
         process_list.append(Process(target=hungary_scraper.scrape))
-    
+
     if switch_country(country) == "RO_RO":
         process_list.append(Process(target=romania_scraper.scrape))
 

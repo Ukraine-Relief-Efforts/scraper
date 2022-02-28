@@ -6,8 +6,9 @@ from utils.utils import get_website_content, gmaps_url_to_lat_lon, normalize
 ROMANIA_INFO_URL = "https://www.politiadefrontiera.ro/ro/main/pg-conditii-generale-de-calatorie-a-cetatenilor-din-statele-care-nu-sunt-membre-ale-uniunii-europene-si-spatiului-economic-european-147.html"
 ROMANIA_MAP_URL = "https://www.politiadefrontiera.ro/ro/traficonline/?dt=1&vw=2"
 
+
 class RomaniaScraper(BaseScraper):
-    def scrape(self, event = ""):
+    def scrape(self, event=""):
         print("Scraping Romania (RO)")
 
         """Start with general border info"""
@@ -46,10 +47,10 @@ class RomaniaScraper(BaseScraper):
             """Parse cell content into Reception object"""
             r = Reception()
             r.name = normalize(cells[0].find("span").get_text(strip=True))
-            #wait_time = cells[1]
-            #info = cells[2]
+            # wait_time = cells[1]
+            # info = cells[2]
             gmaps = cells[3].find("a", href=True)
-            r.lat, r.lon = gmaps_url_to_lat_lon(gmaps['href'])
+            r.lat, r.lon = gmaps_url_to_lat_lon(gmaps["href"])
             recep_arr.append(r)
-        
+
         return recep_arr
