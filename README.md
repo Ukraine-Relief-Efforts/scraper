@@ -78,22 +78,23 @@ tox
 
 # Dependency Management
 
-Dependencies are tracked in requirements.txt.  For the moment, we install all
-dependencies locally to the deps folder:
+Dependencies are tracked in requirements.txt.  If you want to install locally,
+you can do:
 
 ```sh
-pip install -r requirements.txt --target=deps
+pip install -r requirements.txt
 ```
 
-...and we track them in git.  Yes, it's tacky, and we want to ditch this
-approach in favor of a better deployment process (GitHub Actions), but for now
-we're doing it quick and dirty so we can get stuff working in AWS.
+These dependencies are stored on an AWS layer in production.  This shouldn't
+matter to you, but someone ought to know :)
 
 ## Adding Dependencies
 
 If you add a dependency, pop in in requirements.txt.  Make sure you run the
 tests.  And try to run your stuff in AWS, too, which may not play quite as
-nicely with some libraries as your local machine does.
+nicely with some libraries as your local machine does.  Be mindful of the size
+of your dependencies, as there are size limits of the combined code and layer
+that hosts our dependencies.
 
 # Testing with AWS
 
