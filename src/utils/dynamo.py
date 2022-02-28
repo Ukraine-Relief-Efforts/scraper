@@ -25,8 +25,8 @@ def write_to_dynamo(
     testSuffix = ""
 
     if event != "":
-        if ('testSuffix' in event) and (event['testSuffix'] != ""):
-            testSuffix = event['testSuffix']
+        if ("testSuffix" in event) and (event["testSuffix"] != ""):
+            testSuffix = event["testSuffix"]
             isTesting = True
     #######################################################################################################################################
 
@@ -38,7 +38,7 @@ def write_to_dynamo(
     # But we don't want to overwrite the 'old' version of the object that is used for comparison
     # (which is used to tell us if we need to translate it or not)
     if isTesting:
-        existingItem['country']['S'] = existingItem["country"]["S"] + testSuffix
+        existingItem["country"]["S"] = existingItem["country"]["S"] + testSuffix
 
     # Mark the existing item as 'old', then scrape to get the most 'up to date' information.
     update_existing_item_as_old(existingItem)
@@ -73,32 +73,29 @@ def write_to_dynamo(
     # So we write whatever we've scraped with a name that has a suffix defined in the lambda event.
     countryName = (country + testSuffix) if isTesting else country
     client.put_item(
-        TableName = TABLE_NAME,
-        Item = {
-            "country": { "S": countryName },
-            "general": { "L": general_list },
-            "reception": { "L": reception_list },
-            "source": { "S": source },
-            "isoFormat": { "S": isoString },
-            "dateTime": { "S": dateTimeString }
-        })
+        TableName=TABLE_NAME,
+        Item={
+            "country": {"S": countryName},
+            "general": {"L": general_list},
+            "reception": {"L": reception_list},
+            "source": {"S": source},
+            "isoFormat": {"S": isoString},
+            "dateTime": {"S": dateTimeString},
+        },
+    )
+
 
 # Get the item from dynamo
 def get_existing_object(country: str):
     print("Getting dynamo object for country " + country)
-    return client.get_item(
-        TableName = TABLE_NAME,
-        Key = {
-            'country': { 'S': country }
-        }
-    )["Item"]
+    return client.get_item(TableName=TABLE_NAME, Key={"country": {"S": country}})[
+        "Item"
+    ]
+
 
 # Change item name (appent -old) and PUT the item back in dynamo
 def update_existing_item_as_old(item: object):
     print("Marking existing country object as 'old'")
     item["country"]["S"] = item["country"]["S"] + "-old"
 
-    client.put_item(
-        TableName = TABLE_NAME,
-        Item = item
-    )
+    client.put_item(TableName=TABLE_NAME, Item=item)
