@@ -3,62 +3,67 @@ from utils.reception import Reception
 from utils.utils import get_website_content, gmaps_url_to_lat_lon, normalize
 from utils.dynamo import write_to_dynamo
 
-POLAND_EN_URL = 'https://www.gov.pl/web/udsc/ukraina-en'
-POLAND_PL_URL = 'https://www.gov.pl/web/udsc/ukraina2'
-POLAND_UA_URL = 'https://www.gov.pl/web/udsc/ukraina---ua'
+POLAND_EN_URL = "https://www.gov.pl/web/udsc/ukraina-en"
+POLAND_PL_URL = "https://www.gov.pl/web/udsc/ukraina2"
+POLAND_UA_URL = "https://www.gov.pl/web/udsc/ukraina---ua"
+
 
 class PolandScraper(BaseScraper):
-
-    def scrape(self, event = ""):
+    def scrape(self, event=""):
         self.scrape_poland_pl(event)
         self.scrape_poland_en(event)
         self.scrape_poland_ua(event)
 
-    def scrape_poland_pl(self, event = ""):
+    def scrape_poland_pl(self, event=""):
         print("Scraping Poland (PL)")
 
         """calls scrape_poland with the appropriate arguments for the pl website"""
-        self.scrape_poland(POLAND_PL_URL, 'pl', event)
+        self.scrape_poland(POLAND_PL_URL, "pl", event)
 
-    def scrape_poland_en(self, event = ""):
+    def scrape_poland_en(self, event=""):
         print("Scraping Poland (EN)")
 
         """calls scrape_poland with the appropriate arguments for the en website"""
-        self.scrape_poland(POLAND_EN_URL, 'en', event)
+        self.scrape_poland(POLAND_EN_URL, "en", event)
 
-    def scrape_poland_ua(self, event = ""):
+    def scrape_poland_ua(self, event=""):
         print("Scraping Poand (UA)")
 
-
         """calls scrape_poland with the appropriate arguments for the ua website"""
-        self.scrape_poland(POLAND_UA_URL, 'ua', event)
+        self.scrape_poland(POLAND_UA_URL, "ua", event)
 
     def get_core(self, content, locale):
         """Gets the content from a bullet points list of general information for Ukrainian citizens."""
-        items = content.find('div', class_="editor-content").findAll("span" if locale == "en" else "li")
+        items = content.find("div", class_="editor-content").findAll(
+            "span" if locale == "en" else "li"
+        )
         text_arr = []
         for item in items:
             if item.find(text="RECEPTION POINT ADDRESS"):
                 break
-            text_arr.append(normalize(item.get_text(strip=True, separator=' ')))
+            text_arr.append(normalize(item.get_text(strip=True, separator=" ")))
         return text_arr
 
     def scrape_poland(self, url, locale, event):
         """Runs the scraping logic."""
         content = get_website_content(url)
         general = self.get_core(content, locale)
-        if locale in ("pl", "ua"): #poland_ua uses same logic as poland_pl
+        if locale in ("pl", "ua"):  # poland_ua uses same logic as poland_pl
             reception_arr = self.get_reception_points_pl(content)
         elif locale == "en":
             reception_arr = self.get_reception_points_en(content)
 
-        #path = os.path.join(OUTPUT_DIR, f'poland_{locale}.json')
+        # path = os.path.join(OUTPUT_DIR, f'poland_{locale}.json')
         country = "poland-" + locale
         write_to_dynamo(country, event, general, reception_arr, POLAND_PL_URL)
 
     def get_reception_points_en(self, soup):
         """Gets the list of reception points."""
-        items = soup.find('div', class_="editor-content").find('div').findChildren(recursive=False)
+        items = (
+            soup.find("div", class_="editor-content")
+            .find("div")
+            .findChildren(recursive=False)
+        )
         reception_list_start = False
         recep_arr = []
         count = 0
@@ -77,21 +82,21 @@ class PolandScraper(BaseScraper):
 
             count += 1
             r = Reception()
-            r.address = r.name = normalize(item.get_text(strip=True, separator=' '))
-            gmaps = item.find('a', href=True)
+            r.address = r.name = normalize(item.get_text(strip=True, separator=" "))
+            gmaps = item.find("a", href=True)
 
             if gmaps:
-                if "!3d" in gmaps['href']:
-                    r.lat, r.lon = gmaps_url_to_lat_lon(gmaps['href'])
+                if "!3d" in gmaps["href"]:
+                    r.lat, r.lon = gmaps_url_to_lat_lon(gmaps["href"])
                 else:
                     break
 
-            img = item.find('img', src=True)
+            img = item.find("img", src=True)
 
             # first item is special because the qr and address are in the same <p> tag
             if count == 1:
                 if img:
-                    r.qr = img['src']
+                    r.qr = img["src"]
                 recep_arr.append(r)
                 continue
 
@@ -100,17 +105,17 @@ class PolandScraper(BaseScraper):
                 recep_arr.append(r)
             else:
                 # Get from the end of array,
-                img = item.find('img', src=True)
+                img = item.find("img", src=True)
                 if img:
-                    recep_arr[-1].qr = img['src']
+                    recep_arr[-1].qr = img["src"]
 
         return recep_arr
 
     def get_reception_points_pl(self, soup):
         """Gets the list of reception points."""
-        item = soup.find('div', class_="editor-content").findAll('p')
-        item = item[4:] #this number is likely to change (I think)
-                        # TODO detect it automatically
+        item = soup.find("div", class_="editor-content").findAll("p")
+        item = item[4:]  # this number is likely to change (I think)
+        # TODO detect it automatically
 
         recep_arr = []
         """
@@ -130,16 +135,16 @@ class PolandScraper(BaseScraper):
         """
         special_case = item[0]
         r = Reception()
-        r.address = normalize(special_case.get_text(strip=True, separator=' '))
-        gmaps = special_case.find('a', href=True)
+        r.address = normalize(special_case.get_text(strip=True, separator=" "))
+        gmaps = special_case.find("a", href=True)
 
         if gmaps:
-            r.name = normalize(gmaps.find('span').get_text(strip=True))
-            r.lat, r.lon = gmaps_url_to_lat_lon(gmaps['href'])
+            r.name = normalize(gmaps.find("span").get_text(strip=True))
+            r.lat, r.lon = gmaps_url_to_lat_lon(gmaps["href"])
 
-        img = special_case.find('img', src=True)
+        img = special_case.find("img", src=True)
         if img:
-            r.qr = img['src']
+            r.qr = img["src"]
         recep_arr.append(r)
         item.pop(0)
         # TODO: Remove the entire above block if and when they fix the formatting on the site.
@@ -147,19 +152,19 @@ class PolandScraper(BaseScraper):
         for count, i in enumerate(item):
             if count % 2 == 0:
                 r = Reception()
-                r.address = normalize(i.get_text(strip=True, separator=' '))
-                gmaps = i.find('a', href=True)
+                r.address = normalize(i.get_text(strip=True, separator=" "))
+                gmaps = i.find("a", href=True)
                 if gmaps:
-                    if "!3d" in gmaps['href']:
-                        r.name = normalize(gmaps.find('span').get_text(strip=True))
-                        r.lat, r.lon = gmaps_url_to_lat_lon(gmaps['href'])
+                    if "!3d" in gmaps["href"]:
+                        r.name = normalize(gmaps.find("span").get_text(strip=True))
+                        r.lat, r.lon = gmaps_url_to_lat_lon(gmaps["href"])
                     else:
                         break
                     recep_arr.append(r)
             else:
                 # Get from the end of array,
-                img = i.find('img', src=True)
+                img = i.find("img", src=True)
                 if img:
-                    recep_arr[-1].qr = img['src']
+                    recep_arr[-1].qr = img["src"]
 
         return recep_arr

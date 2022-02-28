@@ -8,12 +8,13 @@ from utils.dynamo import write_to_dynamo
 from utils.utils import get_reception_points, get_website_content, normalize
 
 HUNGARY_URL = "https://www.police.hu/hu/hirek-es-informaciok/hatarinfo/hataratlepessel-kapcsolatos-informaciok"
-HUNGARY_KML = "http://www.google.com/maps/d/kml?forcekml=1&mid=1d54nWG4ig0rmBPj3K3RF3I1mkY0KOFZd"
+HUNGARY_KML = (
+    "http://www.google.com/maps/d/kml?forcekml=1&mid=1d54nWG4ig0rmBPj3K3RF3I1mkY0KOFZd"
+)
 
 
 class HungaryScraper(BaseScraper):
-
-    def scrape(self, event = ""):
+    def scrape(self, event=""):
         print("Scraping Hungary (HU)")
 
         """Start with general border info"""
@@ -24,16 +25,14 @@ class HungaryScraper(BaseScraper):
         reception_arr = self._get_reception_points()
         write_to_dynamo("hungary-hu", event, general, reception_arr, HUNGARY_URL)
 
-
     def _get_general(self, content):
         """Gets general border crossing information."""
-        main_div = content.find('div', class_="field-szovegtorzs oldal")
-        items = main_div.findAll('p')
+        main_div = content.find("div", class_="field-szovegtorzs oldal")
+        items = main_div.findAll("p")
         text_arr = []
         for item in items:
-            text_arr.append(normalize(item.get_text(strip=True, separator=' ')))
+            text_arr.append(normalize(item.get_text(strip=True, separator=" ")))
         return text_arr
-
 
     def _get_reception_points(self):
         """Get map KML"""
