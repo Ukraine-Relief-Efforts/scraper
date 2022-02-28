@@ -1,7 +1,7 @@
-../../bin/epylint,sha256=9F496S6-ExQZwRpumlJsDoazdPFFihZ8ohTgCRsatpk,245
-../../bin/pylint,sha256=92jT8otMIUXvNhc0oLgmzuib8PF_g758vALwKlZXbg8,243
-../../bin/pyreverse,sha256=72busqjNdD9ACEWKX1FfDq0HsleeAIr9PCjUiczFWlQ,249
-../../bin/symilar,sha256=xI1n2h82R36zE9GY1Py7YcQlm2Sj_PhFHqNYx0W79uc,245
+../../bin/epylint.exe,sha256=f7esk6c-Lr8fRiMK5R8Lzz4ebO3i0o1XYhz4ERilT2g,97140
+../../bin/pylint.exe,sha256=QcgcMkK4XpyNrQlXHCA39EeqfVijl8Gpqmm_94bZM-A,97138
+../../bin/pyreverse.exe,sha256=DuEZ2m3VIssbYS_3wTWMLiXEvWnFcfEvFOqJ3-IZ3go,97144
+../../bin/symilar.exe,sha256=BYe7ykp80JRlXSnJ9Hnr18Mh_wKyaULDpyox74gvdBo,97140
 pylint-2.12.2.dist-info/CONTRIBUTORS.txt,sha256=OQoX6gWef_AiYxurkG_j901bNDAvroOC9jO8VlDd24g,13708
 pylint-2.12.2.dist-info/INSTALLER,sha256=zuuue4knoyJ-UwPPXg8fezS7VCrXJQrAP7zeNuwvFQg,4
 pylint-2.12.2.dist-info/LICENSE,sha256=-XsUCA3ouEkNYOs9Yg68QZlD4HeUZtHdDV1vaP4ZXc0,17984

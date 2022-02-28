@@ -1,4 +1,3 @@
-610faff656c4cfcbb4a3__mypyc
 _black_version
 black
 black_primer

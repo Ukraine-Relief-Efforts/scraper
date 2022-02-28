@@ -1,5 +1,5 @@
-../../bin/isort,sha256=Vy_xmrFSvmU3iPVx9KC8igfVPlKg92KfnYeg5E2CkJ0,235
-../../bin/isort-identify-imports,sha256=c60EFUU-E8MEFIJ56Qg_jwCvO07UmU2x-U2UhJCBiUM,269
+../../bin/isort-identify-imports.exe,sha256=i6ML824-pzMYeMRevR6ZB6_VlxA3LB16xlKp7UU_jwg,97164
+../../bin/isort.exe,sha256=j0o7vqXyHeoWhKbDFpSAdMUsWmT3zfzrPFy1wJ1hzUc,97130
 isort-5.10.1.dist-info/INSTALLER,sha256=zuuue4knoyJ-UwPPXg8fezS7VCrXJQrAP7zeNuwvFQg,4
 isort-5.10.1.dist-info/LICENSE,sha256=BjKUABw9Uj26y6ud1UrCKZgnVsyvWSylMkCysM3YIGU,1089
 isort-5.10.1.dist-info/METADATA,sha256=Rgh0fARMrFFqafPC_HunYdNYGxjFQYZuW0B9-g-5mKs,12702
