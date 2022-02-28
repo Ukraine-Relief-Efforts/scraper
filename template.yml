@@ -7,7 +7,9 @@ Description: >
 Globals:
   Function:
     # I don't know what this is
-    Timeout: 3
+    Timeout: 5
+    Layers:
+      - !Ref DepLayer
 
 Resources:
   ScrapeFunction:
@@ -20,3 +22,14 @@ Resources:
       FunctionName: webScrapersProd
       # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
       # Events:
+      Policies:
+        - AmazonDynamoDBFullAccess
+  DepLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: scraper-dependencies
+      Description: Dependencies for scraper
+      ContentUri: dependencies/
+      CompatibleRuntimes:
+            - python3.9
+      RetentionPolicy: Delete
