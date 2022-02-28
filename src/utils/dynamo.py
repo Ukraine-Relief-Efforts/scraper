@@ -6,7 +6,10 @@ TABLE_NAME = "TechForUkraine-CIG"
 
 client = boto3.client("dynamodb", region_name="us-east-1")
 
-def write_to_dynamo(country: str, event: object, general: list, reception: list, source: str):
+
+def write_to_dynamo(
+    country: str, event: object, general: list, reception: list, source: str
+):
     """
     Write the data to DynamoDB.
 
@@ -41,7 +44,7 @@ def write_to_dynamo(country: str, event: object, general: list, reception: list,
     update_existing_item_as_old(existingItem)
 
     now = datetime.now()
-    dateTimeString = now.strftime('%Y-%m-%d  %X  %z')
+    dateTimeString = now.strftime("%Y-%m-%d  %X  %z")
     isoString = now.isoformat()
 
     # Remove duplicate strings and create entries into the 'general' attribute of the dynamo item/object
@@ -50,19 +53,21 @@ def write_to_dynamo(country: str, event: object, general: list, reception: list,
     for line in general:
         if line not in uniqueGeneralList:
             uniqueGeneralList.append(line)
-            general_list.append({ "S": line })
+            general_list.append({"S": line})
 
     reception_list = []
     for rec in reception:
-        reception_list.append({
-            "M": {
-                "name": { "S": rec.name },
-                "lat": { "S": rec.lat },
-                "lon": { "S": rec.lon },
-                "address": { "S": rec.address },
-                "qr": { "S": rec.qr }
+        reception_list.append(
+            {
+                "M": {
+                    "name": {"S": rec.name},
+                    "lat": {"S": rec.lat},
+                    "lon": {"S": rec.lon},
+                    "address": {"S": rec.address},
+                    "qr": {"S": rec.qr},
+                }
             }
-        })
+        )
 
     # If we're testing, we don't want to mess with exiting data that is being used by the website
     # So we write whatever we've scraped with a name that has a suffix defined in the lambda event.

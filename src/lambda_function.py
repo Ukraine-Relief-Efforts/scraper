@@ -14,10 +14,11 @@ hungary_scraper = HungaryScraper()
 moldova_scraper = MoldovaScraper()
 romania_scraper = RomaniaScraper()
 
+
 def lambda_handler(event, context):
     """Call all scrapers."""
 
-    if 'country' in event:
+    if "country" in event:
         country = event["country"]
         if country == "poland-en":
             poland_scraper.scrape_poland_en(event)
@@ -36,9 +37,9 @@ def lambda_handler(event, context):
             poland_scraper,
             hungary_scraper,
             moldova_scraper,
-            romania_scraper
+            romania_scraper,
         ]:
             try:
                 scraper.scrape(event)
             except Exception:
-                logging.exception('An error was encountered during scraping.')
+                logging.exception("An error was encountered during scraping.")
