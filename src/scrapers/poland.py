@@ -10,6 +10,7 @@ POLAND_UA_URL = "https://www.gov.pl/web/udsc/ukraina---ua"
 
 POLAND_PL_RECEPTION_URL = "https://www.gov.pl/web/udsc/punkty-recepcyjne2"
 
+
 class PolandScraper(BaseScraper):
     def scrape(self, event=""):
         self.scrape_poland_pl(event)
@@ -50,8 +51,13 @@ class PolandScraper(BaseScraper):
         """Runs the scraping logic."""
         content = get_website_content(url)
         general = self.get_core(content, locale)
-        if locale in ("pl", "ua"):  # poland_ua doesn't seem to have a reception points URL, might change though. For now, grab the polish one and hope the translator doesn't mess up
-            reception_arr = self.get_reception_points_pl(get_website_content(POLAND_PL_RECEPTION_URL))
+        if locale in (
+            "pl",
+            "ua",
+        ):  # poland_ua doesn't seem to have a reception points URL, might change though. For now, grab the polish one and hope the translator doesn't mess up
+            reception_arr = self.get_reception_points_pl(
+                get_website_content(POLAND_PL_RECEPTION_URL)
+            )
         elif locale == "en":
             reception_arr = self.get_reception_points_en(content)
 
@@ -114,18 +120,20 @@ class PolandScraper(BaseScraper):
 
     def get_reception_points_pl(self, soup):
         """Gets the list of reception points."""
-        #TODO no QR codes
-        #TODO maybe this is not the best way of going about things. please double check, I'm tired
+        # TODO no QR codes
+        # TODO maybe this is not the best way of going about things. please double check, I'm tired
         maindiv = soup.find("div", class_="editor-content")
         recep_arr = []
 
         for val in maindiv.find_all("a"):
             recep = Reception()
-            recep.address = recep.name = normalize(val.get_text(strip=True, separator=" "))
+            recep.address = recep.name = normalize(
+                val.get_text(strip=True, separator=" ")
+            )
             gmaps = val["href"]
             if gmaps and "!3d" in gmaps:
                 recep.lat, recep.lon = gmaps_url_to_lat_lon(gmaps)
             else:
-                continue #TODO what to do when the lat/lon isn't in the URL?
+                continue  # TODO what to do when the lat/lon isn't in the URL?
             recep_arr.append(recep)
         return recep_arr
