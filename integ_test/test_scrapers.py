@@ -14,14 +14,11 @@ def put_item():
     with patch("utils.dynamo.client.put_item", MagicMock(name="put_item")) as put_item:
         yield put_item
 
-<<<<<<< HEAD
 @pytest.fixture(autouse=True)
 def get_item():
     """Mock dynamo.... AGAIN!??!!?! What is this garbo..."""
     with patch('utils.dynamo.client.get_item', MagicMock(name='get_item')) as get_item:
         yield get_item
-=======
->>>>>>> master
 
 @pytest.fixture()
 def check_common(put_item):
