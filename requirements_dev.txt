@@ -1,0 +1,6 @@
+black==22.1.0
+pylint==2.12.2
+virtualenv==20.13.2
+boto3==1.21.8
+botocore==1.24.8
+pytest==7.0.1
