@@ -96,6 +96,8 @@ nicely with some libraries as your local machine does.  Be mindful of the size
 of your dependencies, as there are size limits of the combined code and layer
 that hosts our dependencies.
 
+Kindly refer to [SETUP.md](SETUP.md) on how to setup a basic working python virtual environment to allow you to easily add deps to requirements.txt
+
 # Testing with AWS
 
 You'll want to zip up the entire project folder (but not the folder itself) and
@@ -104,5 +106,4 @@ get AWS access from someone on the Discord channel.
 
 # Style
 
-We (will) use Black to enforce a consistent style.  This will run in CI, and
-will apparently be available as a Git hook (once the PR makes it in).
+We use black to set up a consistent style, Kindly refer to [SETUP.md](SETUP.md) on how to setup precommit hooks for the linter.
