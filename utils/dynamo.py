@@ -24,6 +24,11 @@ def write_to_dynamo(country: str, event: object, general: list, reception: list,
         country += testSuffix
     #######################################################################################################################################
 
+    # Get the existing object, that object will be PUT back into dynamo, but marked as 'old' so it can be compared.
+    # The comparison will be used to determine if the translator needs to translate any of the newly scraped data or not.
+    existingItem = get_existing_object(country)
+    update_existing_item_as_old(existingItem)
+
     now = datetime.now()
     dateTimeString = now.strftime('%Y-%m-%d  %X  %z')
     isoString = now.isoformat()
@@ -58,3 +63,21 @@ def write_to_dynamo(country: str, event: object, general: list, reception: list,
             "isoFormat": { "S": isoString },
             "dateTime": { "S": dateTimeString }
         })
+
+# Get the item from dynamo
+def get_existing_object(country: str):
+    return client.get_item(
+        TableName = TABLE_NAME,
+        Key = {
+            'country': { 'S': country}
+        }
+    )["Item"]
+
+# Change item name (appent -old) and PUT the item back in dynamo
+def update_existing_item_as_old(item: object):
+    item["country"]["S"] = item["country"]["S"] + "-old"
+
+    client.put_item(
+        TableName = TABLE_NAME,
+        Item = item
+    )
