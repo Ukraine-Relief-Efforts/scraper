@@ -89,6 +89,15 @@ pip install -r requirements.txt --target=deps
 approach in favor of a better deployment process (GitHub Actions), but for now
 we're doing it quick and dirty so we can get stuff working in AWS.
 
+We also have dependencies in requirements_dev.txt:
+
+```sh
+pip install -r requirements_dev.txt
+```
+
+Don't install them to the deps folder, because we don't want to stuff them into
+the lambda.  They're huge.
+
 ## Adding Dependencies
 
 If you add a dependency, pop in in requirements.txt.  Make sure you run the
