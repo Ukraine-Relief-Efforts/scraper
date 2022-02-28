@@ -8,6 +8,8 @@ POLAND_PL_URL = "https://www.gov.pl/web/udsc/ukraina2"
 POLAND_UA_URL = "https://www.gov.pl/web/udsc/ukraina---ua"
 
 
+POLAND_PL_RECEPTION_URL = "https://www.gov.pl/web/udsc/punkty-recepcyjne2"
+
 class PolandScraper(BaseScraper):
     def scrape(self, event=""):
         self.scrape_poland_pl(event)
@@ -48,14 +50,13 @@ class PolandScraper(BaseScraper):
         """Runs the scraping logic."""
         content = get_website_content(url)
         general = self.get_core(content, locale)
-        if locale in ("pl", "ua"):  # poland_ua uses same logic as poland_pl
-            reception_arr = self.get_reception_points_pl(content)
+        if locale in ("pl", "ua"):  # poland_ua doesn't seem to have a reception points URL, might change though. For now, grab the polish one and hope the translator doesn't mess up
+            reception_arr = self.get_reception_points_pl(get_website_content(POLAND_PL_RECEPTION_URL))
         elif locale == "en":
             reception_arr = self.get_reception_points_en(content)
 
-        # path = os.path.join(OUTPUT_DIR, f'poland_{locale}.json')
         country = "poland-" + locale
-        write_to_dynamo(country, event, general, reception_arr, POLAND_PL_URL)
+        write_to_dynamo(country, event, general, reception_arr, url)
 
     def get_reception_points_en(self, soup):
         """Gets the list of reception points."""
@@ -113,58 +114,18 @@ class PolandScraper(BaseScraper):
 
     def get_reception_points_pl(self, soup):
         """Gets the list of reception points."""
-        item = soup.find("div", class_="editor-content").findAll("p")
-        item = item[4:]  # this number is likely to change (I think)
-        # TODO detect it automatically
-
+        #TODO no QR codes
+        #TODO maybe this is not the best way of going about things. please double check, I'm tired
+        maindiv = soup.find("div", class_="editor-content")
         recep_arr = []
-        """
-        First one looks like this
-        
-        <p><span style="font-size:11pt"><u><span style="font-size:10.5pt"><span style="color:blue"><a href="https://www.google.pl/maps/place/Gminny+Ośrodek+Kultury+i+Turystyki/@51.1653246,23.8026394,17z/data=!3m1!4b1!4m5!3m4!1s0x4723890b09b9cd4d:0x5747c0a6dfbbb992!8m2!3d51.1653213!4d23.8048281"><span style="color:blue">Pałac Suchodolskich Gminny Ośrodek Kultury i Turystyki, ul. Parkowa 5, 22-175 </span><strong>Dorohusk – osiedle</strong></a></span></span></u><br>
-    <img alt="https://www.qr-online.pl/bin/qr/8caf19812112ea544f35e994cd58573c.png" height="102" src="https://www.qr-online.pl/bin/qr/8caf19812112ea544f35e994cd58573c.png" width="102"/> ​</br></span></p>
-        
-        Rest of the things look like this
-        
-        <p><span style="font-size:11pt"><u><span style="color:blue"><a href="https://www.google.pl/maps/place/Sp%C3%B3%C5%82dzielcza+8,+22-540+Do%C5%82hobycz%C3%B3w/@50.5879307,24.0283211,17z/data=!3m1!4b1!4m5!3m4!1s0x4724ebc1d634e40b:0xd5f90534ea38bc2!8m2!3d50.5879273!4d24.0305098"><span style="color:blue">Przygraniczne Centrum Kultury i Rekreacji, ul. Spółdzielcza 8, 22 - 540 </span><strong>Dołhobyczów</strong></a></span></u></span></p>
-    =====
-    <p><span style="font-size:11pt"><img alt="https://www.qr-online.pl/bin/qr/7608a0a9319f79f95fb5346d5f6e3466.png" height="110" src="https://www.qr-online.pl/bin/qr/7608a0a9319f79f95fb5346d5f6e3466.png" width="110"/> ​</span></p>
-    
-        Temporarily hardcoding for the first one
-    
-        """
-        special_case = item[0]
-        r = Reception()
-        r.address = normalize(special_case.get_text(strip=True, separator=" "))
-        gmaps = special_case.find("a", href=True)
 
-        if gmaps:
-            r.name = normalize(gmaps.find("span").get_text(strip=True))
-            r.lat, r.lon = gmaps_url_to_lat_lon(gmaps["href"])
-
-        img = special_case.find("img", src=True)
-        if img:
-            r.qr = img["src"]
-        recep_arr.append(r)
-        item.pop(0)
-        # TODO: Remove the entire above block if and when they fix the formatting on the site.
-
-        for count, i in enumerate(item):
-            if count % 2 == 0:
-                r = Reception()
-                r.address = normalize(i.get_text(strip=True, separator=" "))
-                gmaps = i.find("a", href=True)
-                if gmaps:
-                    if "!3d" in gmaps["href"]:
-                        r.name = normalize(gmaps.find("span").get_text(strip=True))
-                        r.lat, r.lon = gmaps_url_to_lat_lon(gmaps["href"])
-                    else:
-                        break
-                    recep_arr.append(r)
+        for val in maindiv.find_all("a"):
+            recep = Reception()
+            recep.address = recep.name = normalize(val.get_text(strip=True, separator=" "))
+            gmaps = val["href"]
+            if gmaps and "!3d" in gmaps:
+                recep.lat, recep.lon = gmaps_url_to_lat_lon(gmaps)
             else:
-                # Get from the end of array,
-                img = i.find("img", src=True)
-                if img:
-                    recep_arr[-1].qr = img["src"]
-
+                continue #TODO what to do when the lat/lon isn't in the URL?
+            recep_arr.append(recep)
         return recep_arr
