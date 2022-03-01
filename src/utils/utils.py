@@ -85,7 +85,8 @@ def setup_logger():
 
 
 def log_to_discord(scraper_outcomes: list[tuple[str, str]]):
-    url = "https://discord.com/api/webhooks/948021922661281883/IT9C3Q1ITRH4A_VUdfz8bYLLDum_qSY0c_BcNUlLebIgW1SLBKkxW5CZFNzfVvMQK5a0"
+    with open(".discord-webhook", "r") as file:
+        url = file.read()
     content = {
         "content": None,
         "embeds": [
