@@ -61,16 +61,16 @@ def check_common(put_item):
     return func
 
 
-def test_poland_pl(put_item, check_common):
-    poland_scraper = PolandScraper()
-    poland_scraper.scrape_poland_pl()
-    check_common("poland-pl")
+# def test_poland_pl(put_item, check_common):
+#     poland_scraper = PolandScraper()
+#     poland_scraper.scrape_poland_pl()
+#     check_common("poland-pl")
 
 
-def test_poland_en(put_item, check_common):
-    poland_scraper = PolandScraper()
-    poland_scraper.scrape_poland_en()
-    check_common("poland-en")
+# def test_poland_en(put_item, check_common):
+#     poland_scraper = PolandScraper()
+#     poland_scraper.scrape_poland_en()
+#     check_common("poland-en")
 
 
 def test_poland_ua(put_item, check_common):
