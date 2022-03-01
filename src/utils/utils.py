@@ -1,7 +1,9 @@
 import json
 import logging
 import unicodedata
-from datetime import datetime
+from dataclasses import dataclass
+from enum import Enum
+from pathlib import Path
 
 import requests
 from bs4 import BeautifulSoup
@@ -84,17 +86,37 @@ def setup_logger():
     return LOGGER
 
 
-def log_to_discord(scraper_outcomes: list[tuple[str, str]]):
-    with open(".discord-webhook", "r") as file:
-        url = file.read()
-    content = {
-        "content": None,
-        "embeds": [
-            {
-                "title": datetime.utcnow().isoformat(),
-                "description": "\n".join(f"{t[0]} -- {t[1]}" for t in scraper_outcomes),
-                "color": None
-            }
-        ]
-    }
-    requests.post(url, json=content)
+class LogLevelEnum(Enum):
+    INFO = 562741
+    DEBUG = 10227
+    WARN = 16240465
+    ERROR = 15942656
+
+
+@dataclass()
+class DiscordLogData:
+    title: str
+    description: str
+    log_level: LogLevelEnum
+
+
+def log_to_discord(logs: list[DiscordLogData]):
+    try:
+        with open(Path(__file__).parent / ".discord-webhook", "r") as file:
+            url = file.read().strip()
+        if len(logs) > 10:
+            raise ValueError("Discord supports a maximum of 10 embeds per message")
+        content = {
+            "content": None,
+            "embeds": [
+                {
+                    "title": log.title,
+                    "description": log.description,
+                    "color": log.log_level.value
+                } for log in logs
+            ]
+        }
+        requests.post(url, json=content)
+    except Exception as exception:
+        # Don't fail execution if logging fails
+        print(exception)

@@ -7,7 +7,7 @@ from scrapers.poland import PolandScraper
 from scrapers.moldova_ro import MoldovaScraper
 from scrapers.hungary_hu import HungaryScraper
 from scrapers.romaina_ro import RomaniaScraper
-from utils.utils import log_to_discord
+from utils.utils import log_to_discord, LogLevelEnum, DiscordLogData
 
 poland_scraper = PolandScraper()
 hungary_scraper = HungaryScraper()
@@ -42,12 +42,18 @@ def lambda_handler(event, context):
             ("romania-[all]", romania_scraper.scrape),
         ]
 
-    scaper_outcomes: list[tuple[str, str]] = []
+    scraper_outcomes: list[tuple[str, str]] = []
     for scraper_name, scraper_function in scrapers:
         try:
             scraper_function(event)
         except Exception as exception:
-            scaper_outcomes.append((scraper_name, str(exception)))
+            scraper_outcomes.append((scraper_name, str(exception)))
         else:
-            scaper_outcomes.append((scraper_name, "Success!"))
-    log_to_discord(scaper_outcomes)
+            scraper_outcomes.append((scraper_name, "Success!"))
+
+    log = DiscordLogData(
+        title="TEST scraper log event",
+        description="\n".join(f"{t[0]} -- {t[1]}" for t in scraper_outcomes),
+        log_level=LogLevelEnum.INFO
+    )
+    log_to_discord(logs=[log])
