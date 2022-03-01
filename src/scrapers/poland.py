@@ -3,31 +3,31 @@ from utils.reception import Reception
 from utils.utils import get_website_content, gmaps_url_to_lat_lon, normalize
 from utils.dynamo import write_to_dynamo
 
-POLAND_UA_URL = "https://www.gov.pl/web/udsc/ukraina---ua"
+POLAND_PL_URL = "https://www.gov.pl/web/udsc/ukraina2"
 POLAND_PL_RECEPTION_URL = "https://www.gov.pl/web/udsc/punkty-recepcyjne2"
 
 # Keeping these ULRs around as a backup incase they are ever needed
 # POLAND_EN_URL = "https://www.gov.pl/web/udsc/ukraina-en"
-# POLAND_PL_URL = "https://www.gov.pl/web/udsc/ukraina2"
+# POLAND_UA_URL = "https://www.gov.pl/web/udsc/ukraina---ua"
 
 
 class PolandScraper(BaseScraper):
     def scrape(self, event=""):
-        self.scrape_poland_ua(event)
-        # self.scrape_poland_pl(event)
+        self.scrape_poland_pl(event)
+        # self.scrape_poland_ua(event)
         # self.scrape_poland_en(event)
 
-    def scrape_poland_ua(self, event=""):
-        print("Scraping Poand (UA)")
+    def scrape_poland_pl(self, event=""):
+        print("Scraping Poland (PL)")
 
-        """calls scrape_poland with the appropriate arguments for the ua website"""
-        self.scrape_poland(POLAND_UA_URL, "ua", event)
+        """calls scrape_poland with the appropriate arguments for the pl website"""
+        self.scrape_poland(POLAND_PL_URL, "pl", event)
 
-    # def scrape_poland_pl(self, event=""):
-    #     print("Scraping Poland (PL)")
+    # def scrape_poland_ua(self, event=""):
+    #     print("Scraping Poand (UA)")
 
-    #     """calls scrape_poland with the appropriate arguments for the pl website"""
-    #     self.scrape_poland(POLAND_PL_URL, "pl", event)
+    #     """calls scrape_poland with the appropriate arguments for the ua website"""
+    #     self.scrape_poland(POLAND_UA_URL, "ua", event)
 
     # def scrape_poland_en(self, event=""):
     #     print("Scraping Poland (EN)")
