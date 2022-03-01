@@ -1,6 +1,8 @@
 import json
 import logging
 import unicodedata
+from datetime import datetime
+
 import requests
 from bs4 import BeautifulSoup
 from utils.constants import LOGFILE_PATH, HEADERS
@@ -80,3 +82,18 @@ def setup_logger():
         ],
     )
     return LOGGER
+
+
+def log_to_discord(scraper_outcomes: list[tuple[str, str]]):
+    url = "https://discord.com/api/webhooks/948021922661281883/IT9C3Q1ITRH4A_VUdfz8bYLLDum_qSY0c_BcNUlLebIgW1SLBKkxW5CZFNzfVvMQK5a0"
+    content = {
+        "content": None,
+        "embeds": [
+            {
+                "title": datetime.utcnow().isoformat(),
+                "description": "\n".join(f"{t[0]} -- {t[1]}" for t in scraper_outcomes),
+                "color": None
+            }
+        ]
+    }
+    requests.post(url, json=content)
