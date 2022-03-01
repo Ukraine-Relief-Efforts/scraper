@@ -10,12 +10,13 @@ POLAND_PL_RECEPTION_URL = "https://www.gov.pl/web/udsc/punkty-recepcyjne2"
 # POLAND_EN_URL = "https://www.gov.pl/web/udsc/ukraina-en"
 # POLAND_PL_URL = "https://www.gov.pl/web/udsc/ukraina2"
 
+
 class PolandScraper(BaseScraper):
     def scrape(self, event=""):
         self.scrape_poland_ua(event)
         # self.scrape_poland_pl(event)
         # self.scrape_poland_en(event)
-        
+
     def scrape_poland_ua(self, event=""):
         print("Scraping Poand (UA)")
 
