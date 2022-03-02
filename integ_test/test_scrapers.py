@@ -6,6 +6,7 @@ import utils.dynamo
 from scrapers.hungary_hu import HungaryScraper
 from scrapers.moldova_ro import MoldovaScraper
 from scrapers.poland import PolandScraper
+from scrapers.romaina_ro import RomaniaScraper
 
 
 @pytest.fixture(autouse=True)
@@ -56,16 +57,20 @@ def check_common(put_item):
             }
             for rec in item["reception"]["L"]
         ]
+
+        # These are very low numbers, and if we're below this, something is
+        # probably wrong
+        assert len(general) > 5
+        assert len(reception) > 5
         return item, general, reception
 
     return func
 
 
-def test_poland_pl(put_item, check_common):
+def test_scrape_poland_pl(put_item, check_common):
     poland_scraper = PolandScraper()
     poland_scraper.scrape_poland_pl()
-    check_common("poland-pl")
-
+    check_common('poland-pl')
 
 # def test_poland_en(put_item, check_common):
 #     poland_scraper = PolandScraper()
@@ -77,6 +82,12 @@ def test_poland_pl(put_item, check_common):
 #     poland_scraper = PolandScraper()
 #     poland_scraper.scrape_poland_ua()
 #     check_common("poland-ua")
+
+
+def test_scrape_romania_ro(put_item, check_common):
+    scraper = RomaniaScraper()
+    scraper.scrape()
+    check_common('romania-ro')
 
 
 def test_scrape_hungary_hu(put_item, check_common):
