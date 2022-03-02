@@ -4,12 +4,8 @@ from concurrent.futures import ThreadPoolExecutor
 
 from scrapers.hungary_hu import HungaryScraper
 from scrapers.moldova_ro import MoldovaScraper
-# Additional imports
 from scrapers.poland import PolandScraper
 from scrapers.romaina_ro import RomaniaScraper
-
-sys.path.insert(0, "./deps")
-
 
 poland_scraper = PolandScraper()
 hungary_scraper = HungaryScraper()
