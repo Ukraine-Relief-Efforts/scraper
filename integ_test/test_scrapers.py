@@ -70,7 +70,8 @@ def check_common(put_item):
 def test_scrape_poland_pl(put_item, check_common):
     poland_scraper = PolandScraper()
     poland_scraper.scrape_poland_pl()
-    check_common('poland-pl')
+    check_common("poland-pl")
+
 
 # def test_poland_en(put_item, check_common):
 #     poland_scraper = PolandScraper()
@@ -87,7 +88,7 @@ def test_scrape_poland_pl(put_item, check_common):
 def test_scrape_romania_ro(put_item, check_common):
     scraper = RomaniaScraper()
     scraper.scrape()
-    check_common('romania-ro')
+    check_common("romania-ro")
 
 
 def test_scrape_hungary_hu(put_item, check_common):
