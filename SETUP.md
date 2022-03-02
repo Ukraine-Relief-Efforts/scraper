@@ -18,12 +18,6 @@ Now, you can install requirements
 
 `pip install -r requirements.txt`
 
-If you make any imports or changes that require requirements to be updated, you can now safely do
-
-`python3 -m pip freeze > requirements.txt`
-
-to update `requirements.txt` without running the risk of adding any other dependencies that are used elsewhere in the system and not related to this project.
-
 After this, kindly setup the pre-commit hooks. The pre-commit-hook library has been added to the requirements.txt, and you should have access to the pre-commit cli
 
 ```
