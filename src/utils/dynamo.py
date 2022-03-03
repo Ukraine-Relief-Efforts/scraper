@@ -35,7 +35,11 @@ def write_to_dynamo(
 
     # Get the existing object, that object will be PUT back into dynamo, but marked as 'old' so it can be compared.
     # The comparison will be used to determine if the translator needs to translate any of the newly scraped data or not.
-    existingItem = get_existing_object(country)
+    key_exists = True
+    try:
+        existingItem = get_existing_object(country)
+    except KeyError:
+        key_exists = False
 
     # If we're testing we're find to GET and object out of dynamo
     # But we don't want to overwrite the 'old' version of the object that is used for comparison
@@ -44,7 +48,8 @@ def write_to_dynamo(
         existingItem["country"]["S"] = existingItem["country"]["S"] + testSuffix
 
     # Mark the existing item as 'old', then scrape to get the most 'up to date' information.
-    update_existing_item_as_old(existingItem)
+    if key_exists:
+        update_existing_item_as_old(existingItem)
 
     now = datetime.now()
     dateTimeString = now.strftime("%Y-%m-%d  %X  %z")
