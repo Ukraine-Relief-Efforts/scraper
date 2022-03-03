@@ -111,9 +111,10 @@ def log_to_discord(logs: list[DiscordLogData]):
                 {
                     "title": log.title,
                     "description": log.description,
-                    "color": log.log_level.value
-                } for log in logs
-            ]
+                    "color": log.log_level.value,
+                }
+                for log in logs
+            ],
         }
         requests.post(url, json=content)
     except Exception as exception:

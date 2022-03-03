@@ -53,7 +53,7 @@ def lambda_handler(event, context):
         log = DiscordLogData(
             title="TEST scraper log event",
             description="\n".join(f"{t[0]} -- {t[1]}" for t in scraper_outcomes),
-            log_level=LogLevelEnum.INFO
+            log_level=LogLevelEnum.INFO,
         )
         log_to_discord(logs=[log])
 
