@@ -1,11 +1,10 @@
-import logging
-import sys
 from concurrent.futures import ThreadPoolExecutor
 
 from scrapers.hungary_hu import HungaryScraper
 from scrapers.moldova_ro import MoldovaScraper
 from scrapers.poland import PolandScraper
 from scrapers.romaina_ro import RomaniaScraper
+from utils.utils import DiscordLogData, LogLevelEnum, log_to_discord
 
 poland_scraper = PolandScraper()
 hungary_scraper = HungaryScraper()
@@ -37,15 +36,26 @@ def lambda_handler(event, context):
             moldova_scraper,
             romania_scraper,
         ]
+        scraper_outcomes: list[tuple[str, str]] = []
 
         def run_scraper(scraper):
             try:
                 scraper.scrape(event)
-            except Exception:
-                logging.exception("An error was encountered during scraping.")
-                raise
+            except Exception as exception:
+                scraper_outcomes.append((scraper.__class__.__name__, str(exception)))
+                raise exception
+            else:
+                scraper_outcomes.append((scraper.__class__.__name__, "Success!"))
 
         with ThreadPoolExecutor(4) as pool:
             results = pool.map(run_scraper, scrapers)
+
+        log = DiscordLogData(
+            title="TEST scraper log event",
+            description="\n".join(f"{t[0]} -- {t[1]}" for t in scraper_outcomes),
+            log_level=LogLevelEnum.INFO
+        )
+        log_to_discord(logs=[log])
+
         # Convert the iterator to a list in case any of them raised exceptions
         _ = list(results)
