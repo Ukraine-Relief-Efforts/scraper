@@ -7,7 +7,8 @@ Description: >
 Globals:
   Function:
     # I don't know what this is
-    Timeout: 5
+    # Neither, I just hope it works
+    Timeout: 30
     Layers:
       - !Ref DepLayer
 
