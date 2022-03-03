@@ -47,6 +47,7 @@ class RomaniaScraper(BaseScraper):
             """Parse cell content into Reception object"""
             r = Reception()
             r.name = normalize(cells[0].find("span").get_text(strip=True))
+            r.address = "WIP"
             # wait_time = cells[1]
             # info = cells[2]
             gmaps = cells[3].find("a", href=True)
