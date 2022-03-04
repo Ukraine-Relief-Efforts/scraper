@@ -17,11 +17,11 @@ class HungaryScraper(BaseScraper):
     def scrape(self, event=""):
         print("Scraping Hungary (HU)")
 
-        """Start with general border info"""
+        # Start with general border info
         content = get_website_content(HUNGARY_URL)
         general = self._get_general(content)
 
-        """Get border crossing points"""
+        # Get border crossing points
         reception_arr = self._get_reception_points()
         write_to_dynamo("hungary-hu", event, general, reception_arr, HUNGARY_URL)
 
