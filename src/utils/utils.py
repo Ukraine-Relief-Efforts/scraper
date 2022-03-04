@@ -39,7 +39,7 @@ def get_reception_points(
                     if placemark["styleUrl"] not in style_urls_blacklist:
                         r = Reception()
                         r.name = normalize(placemark["name"])
-                        r.address = "WIP"
+                        r.address = r.name  # TEMPORARY
                         coord = placemark["Point"]["coordinates"].split(",")
                         r.lon = coord[0].strip()
                         r.lat = coord[1].strip()

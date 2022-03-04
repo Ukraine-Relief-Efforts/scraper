@@ -11,11 +11,11 @@ class RomaniaScraper(BaseScraper):
     def scrape(self, event=""):
         print("Scraping Romania (RO)")
 
-        """Start with general border info"""
+        # Start with general border info
         content = get_website_content(ROMANIA_INFO_URL)
         general = self.get_general(content)
 
-        """Get border crossing points"""
+        # Get border crossing points
         reception_arr = self._get_reception_points(ROMANIA_MAP_URL)
         write_to_dynamo("romania-ro", event, general, reception_arr, ROMANIA_INFO_URL)
 
@@ -32,22 +32,22 @@ class RomaniaScraper(BaseScraper):
         recep_arr = []
         content = get_website_content(url)
 
-        """Get a list of table rows"""
+        # Get a list of table rows
         main_div = content.find("div", class_="txtcontent")
         rows = main_div.findAll("tr")
 
-        """Get crossing info from each table row cell"""
+        # Get crossing info from each table row cell
         for row in rows:
-            """Skip table header row"""
+            # Skip table header row
             if row.find("th") is not None:
                 continue
 
             cells = row.findAll("td")
 
-            """Parse cell content into Reception object"""
+            # Parse cell content into Reception object
             r = Reception()
             r.name = normalize(cells[0].find("span").get_text(strip=True))
-            r.address = "WIP"
+            r.address = r.name  # TEMPORARY
             # wait_time = cells[1]
             # info = cells[2]
             gmaps = cells[3].find("a", href=True)
