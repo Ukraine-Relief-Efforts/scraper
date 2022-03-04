@@ -60,12 +60,12 @@ def check_common(put_item):
 
         for rec in reception:
             # Will raise if not a float
-            _ = float(rec['lat'])
-            _ = float(rec['lon'])
-            assert rec['name']
+            _ = float(rec["lat"])
+            _ = float(rec["lon"])
+            assert rec["name"]
 
-        names = {rec['name'] for rec in reception}
-        addresses = {rec['address'] for rec in reception}
+        names = {rec["name"] for rec in reception}
+        addresses = {rec["address"] for rec in reception}
 
         # These are very low numbers, and if we're below this, something is
         # probably wrong
@@ -113,8 +113,9 @@ def test_scrape_hungary_hu(check_common):
     assert "Letenye Autópálya" in general
     assert len(reception) == 58
 
-    names = {rec['name'] for rec in reception}
-    assert 'Garbolc - Bercu' in names
+    names = {rec["name"] for rec in reception}
+    assert "Garbolc - Bercu" in names
+
 
 def test_scrape_moldova_ro(check_common):
     moldova_scraper = MoldovaScraper()
@@ -135,8 +136,7 @@ def test_scrape_moldova_ro(check_common):
         "a) permisul de conducere perfectat pe numele conducătorului auto, valabil pentru categoria (subcategoria) din care face parte autovehiculul condus; b) certificatul de înmatriculare a vehiculului; c) poliţa de asigurare obligatorie de răspundere civilă a deţinătorilor mijloacelor de transport auto; d) actele referitoare la natura şi masa încărcăturii, în cazurile stabilite de legislaţie.",
     ]
 
-
-    names = {rec['name'] for rec in reception}
-    assert 'Medveja-Zelionaia' in names
-    assert 'Criva-Mamaliga' in names
-    assert 'Cahul-Oancea' in names
+    names = {rec["name"] for rec in reception}
+    assert "Medveja-Zelionaia" in names
+    assert "Criva-Mamaliga" in names
+    assert "Cahul-Oancea" in names
