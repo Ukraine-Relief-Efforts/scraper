@@ -42,10 +42,14 @@ def lambda_handler(event, context):
             try:
                 scraper.scrape(event)
             except Exception as exception:
-                scraper_outcomes.append((scraper.__class__.__name__, str(exception)))
+                outcome = (scraper.__class__.__name__, str(exception))
+                scraper_outcomes.append(outcome)
+                print(outcome)
                 raise exception
             else:
-                scraper_outcomes.append((scraper.__class__.__name__, "Success!"))
+                outcome = (scraper.__class__.__name__, "Success!")
+                scraper_outcomes.append(outcome)
+                print(outcome)
 
         with ThreadPoolExecutor(4) as pool:
             results = pool.map(run_scraper, scrapers)

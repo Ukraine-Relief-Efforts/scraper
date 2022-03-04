@@ -30,16 +30,9 @@ def write_to_dynamo(
             isTesting = True
     #######################################################################################################################################
 
-    # Remove any strings from the general array if they are empty/whitespace only (breaks translator otherwise)
-    general = [x for x in general if x.strip()]
-
     # Get the existing object, that object will be PUT back into dynamo, but marked as 'old' so it can be compared.
     # The comparison will be used to determine if the translator needs to translate any of the newly scraped data or not.
-    key_exists = True
-    try:
-        existingItem = get_existing_object(country)
-    except KeyError:
-        key_exists = False
+    existingItem = get_existing_object(country)
 
     # If we're testing we're find to GET and object out of dynamo
     # But we don't want to overwrite the 'old' version of the object that is used for comparison
@@ -48,8 +41,7 @@ def write_to_dynamo(
         existingItem["country"]["S"] = existingItem["country"]["S"] + testSuffix
 
     # Mark the existing item as 'old', then scrape to get the most 'up to date' information.
-    if key_exists:
-        update_existing_item_as_old(existingItem)
+    update_existing_item_as_old(existingItem)
 
     now = datetime.now()
     dateTimeString = now.strftime("%Y-%m-%d  %X  %z")
@@ -80,17 +72,21 @@ def write_to_dynamo(
     # If we're testing, we don't want to mess with exiting data that is being used by the website
     # So we write whatever we've scraped with a name that has a suffix defined in the lambda event.
     countryName = (country + testSuffix) if isTesting else country
-    client.put_item(
-        TableName=TABLE_NAME,
-        Item={
-            "country": {"S": countryName},
-            "general": {"L": general_list},
-            "reception": {"L": reception_list},
-            "source": {"S": source},
-            "isoFormat": {"S": isoString},
-            "dateTime": {"S": dateTimeString},
-        },
-    )
+    try:
+        client.put_item(
+            TableName=TABLE_NAME,
+            Item={
+                "country": {"S": countryName},
+                "general": {"L": general_list},
+                "reception": {"L": reception_list},
+                "source": {"S": source},
+                "isoFormat": {"S": isoString},
+                "dateTime": {"S": dateTimeString},
+            },
+        )
+        print("Successfully scraped " + countryName + " and inserted into DyanamoDB")
+    except Exception as exception:
+        print("An error occurred inserting " + countryName + " into DynamoDB")
 
 
 # Get the item from dynamo
