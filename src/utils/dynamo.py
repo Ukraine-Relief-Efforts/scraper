@@ -80,17 +80,21 @@ def write_to_dynamo(
     # If we're testing, we don't want to mess with exiting data that is being used by the website
     # So we write whatever we've scraped with a name that has a suffix defined in the lambda event.
     countryName = (country + testSuffix) if isTesting else country
-    client.put_item(
-        TableName=TABLE_NAME,
-        Item={
-            "country": {"S": countryName},
-            "general": {"L": general_list},
-            "reception": {"L": reception_list},
-            "source": {"S": source},
-            "isoFormat": {"S": isoString},
-            "dateTime": {"S": dateTimeString},
-        },
-    )
+    try:
+        client.put_item(
+            TableName=TABLE_NAME,
+            Item={
+                "country": {"S": countryName},
+                "general": {"L": general_list},
+                "reception": {"L": reception_list},
+                "source": {"S": source},
+                "isoFormat": {"S": isoString},
+                "dateTime": {"S": dateTimeString},
+            },
+        )
+        print("Successfully scraped " + countryName + " and inserted into DyanamoDB")
+    except Exception as exception:
+        print("An error occurred inserting " + countryName + " into DynamoDB")
 
 
 # Get the item from dynamo
