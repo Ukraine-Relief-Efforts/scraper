@@ -47,10 +47,6 @@ def write_to_dynamo(
     if isTesting:
         existingItem["country"]["S"] = existingItem["country"]["S"] + testSuffix
 
-    # Mark the existing item as 'old', then scrape to get the most 'up to date' information.
-    if key_exists:
-        update_existing_item_as_old(existingItem)
-
     now = datetime.now()
     dateTimeString = now.strftime("%Y-%m-%d  %X  %z")
     isoString = now.isoformat()
@@ -99,11 +95,3 @@ def get_existing_object(country: str):
     return client.get_item(TableName=TABLE_NAME, Key={"country": {"S": country}})[
         "Item"
     ]
-
-
-# Change item name (appent -old) and PUT the item back in dynamo
-def update_existing_item_as_old(item: object):
-    print("Marking existing country object as 'old'")
-    item["country"]["S"] = item["country"]["S"] + "-old"
-
-    client.put_item(TableName=TABLE_NAME, Item=item)
