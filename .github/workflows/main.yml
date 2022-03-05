@@ -18,8 +18,9 @@ jobs:
           aws-access-key-id: '${{ secrets.AWS_ACCESS_KEY_ID }}'
           aws-secret-access-key: '${{ secrets.AWS_SECRET_ACCESS_KEY }}'
           aws-region: 'us-east-1'
-          environment: SUMO_LOG_LEVEL=info,SUMO_MAX_RETRY=3,SUMO_HTTP_ENDPOINT=${{ secrets.SUMO_HTTP_ENDPOINT }}
       # Build using SAM
-      - run: sam build --use-container --template-file template.yml
+      - run: |
+          sam build --use-container --template-file template.yml \
+          --parameter-overrides ParameterKey=SUMO_LOG_LEVEL,ParameterValue=info ParameterKey=SUMO_MAX_RETRY,ParameterValue=3 ParameterKey=SUMO_HTTP_ENDPOINT,ParameterValue=${{ secrets.SUMO_HTTP_ENDPOINT }}
       # Deploy on AWS
       - run: sam deploy --no-fail-on-empty-changeset

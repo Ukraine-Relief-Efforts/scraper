@@ -33,3 +33,11 @@ Resources:
       CompatibleRuntimes:
         - python3.9
       RetentionPolicy: Delete
+
+Parameters:
+  SUMO_LOG_LEVEL:
+    Type: String
+  SUMO_MAX_RETRY:
+    Type: String
+  SUMO_HTTP_ENDPOINT:
+    Type: String
