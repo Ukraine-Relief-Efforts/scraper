@@ -27,13 +27,10 @@ def _check_for_data_loss(general: list, reception: list, old_item: dict):
     except KeyError:
         old_reception = []
 
-    # Look for a list that's much shorter
-    # But only treat it as data loss if there was any significant number of
-    # list items before
     def check_data(new, old):
         new_len = len(new)
         old_len = len(old)
-        if new_len < old_len / 2 and old_len > 5:
+        if old_len > 0 and new_len < 1:
             raise DataLossError()
 
     check_data(new=general, old=old_general)

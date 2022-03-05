@@ -215,7 +215,7 @@ def test_write_to_dynamo_with_reception_data_loss_will_raise(
             country="Sto Lat",
             event="",
             general=[],
-            reception=[Reception(name="", address="", lat="1.42", lon="2.42", qr="")],
+            reception=[],
             source="",
         )
 
