@@ -33,14 +33,6 @@ def write_to_dynamo(
     # Remove any strings from the general array if they are empty/whitespace only (breaks translator otherwise)
     general = [x for x in general if x.strip()]
 
-    # Get the existing object, that object will be PUT back into dynamo, but marked as 'old' so it can be compared.
-    # The comparison will be used to determine if the translator needs to translate any of the newly scraped data or not.
-    key_exists = True
-    try:
-        existingItem = get_existing_object(country)
-    except KeyError:
-        key_exists = False
-
     # If we're testing we're find to GET and object out of dynamo
     # But we don't want to overwrite the 'old' version of the object that is used for comparison
     # (which is used to tell us if we need to translate it or not)
