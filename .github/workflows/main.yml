@@ -20,6 +20,7 @@ jobs:
           aws-region: 'us-east-1'
       # Build using SAM
       - run: |
-          sam build --use-container --template-file template.yml
+          sam build --use-container --template-file template.yml \
+          --parameter-overrides SUMO_LOG_LEVEL=info SUMO_MAX_RETRY=3 SUMO_HTTP_ENDPOINT=${{ secrets.SUMO_HTTP_ENDPOINT }}
       # Deploy on AWS
       - run: sam deploy --no-fail-on-empty-changeset

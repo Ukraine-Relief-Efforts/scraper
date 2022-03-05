@@ -22,9 +22,12 @@ Resources:
       FunctionName: webScrapersProd
       Environment:
         Parameters:
-          SUMO_LOG_LEVEL: info
-          SUMO_MAX_RETRY: 3
-          SUMO_HTTP_ENDPOINT: ${{ secrets.SUMO_HTTP_ENDPOINT }}
+          SUMO_LOG_LEVEL:
+            Type: String
+          SUMO_MAX_RETRY:
+            Type: String
+          SUMO_HTTP_ENDPOINT:
+            Type: String
       # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
       # Events:
       Policies:
