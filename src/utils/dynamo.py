@@ -7,6 +7,36 @@ TABLE_NAME = "TechForUkraine-CIG"
 client = boto3.client("dynamodb", region_name="us-east-1")
 
 
+class DataLossError(Exception):
+    """
+    Exception representing catastrophic data loss.
+
+    This would likely stem from the scraped website restructuring.
+    """
+
+
+def _check_for_data_loss(general: list, reception: list, old_item: dict):
+
+    try:
+        old_general = old_item["general"]["L"]
+    except KeyError:
+        old_general = []
+
+    try:
+        old_reception = old_item["reception"]["L"]
+    except KeyError:
+        old_reception = []
+
+    def check_data(new, old):
+        new_len = len(new)
+        old_len = len(old)
+        if old_len > 0 and new_len < 1:
+            raise DataLossError()
+
+    check_data(new=general, old=old_general)
+    check_data(new=reception, old=old_reception)
+
+
 def write_to_dynamo(
     country: str, event: object, general: list, reception: list, source: str
 ):
@@ -15,6 +45,7 @@ def write_to_dynamo(
 
     Args:
         country (str): The name of the country.
+        event (str or dict?): The aws event that triggered the lambda?
         general (list[str]): More general information.
         reception (list): Border crossing points.
     """
@@ -49,6 +80,13 @@ def write_to_dynamo(
 
     # Mark the existing item as 'old', then scrape to get the most 'up to date' information.
     if key_exists:
+        # Let's check for catastrophic data loss, first
+        _check_for_data_loss(
+            general=general,
+            reception=reception,
+            old_item=existingItem,
+        )
+
         update_existing_item_as_old(existingItem)
 
     now = datetime.now()
@@ -105,7 +143,7 @@ def get_existing_object(country: str):
     ]
 
 
-# Change item name (appent -old) and PUT the item back in dynamo
+# Change item name (append -old) and PUT the item back in dynamo
 def update_existing_item_as_old(item: object):
     print("Marking existing country object as 'old'")
     item["country"]["S"] = item["country"]["S"] + "-old"

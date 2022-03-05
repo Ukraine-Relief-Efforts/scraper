@@ -21,6 +21,6 @@ jobs:
       # Build using SAM
       - run: |
           sam build --use-container --template-file template.yml \
-          --parameter-overrides SUMO_LOG_LEVEL=info SUMO_MAX_RETRY=3 SUMO_HTTP_ENDPOINT=${{ secrets.SUMO_HTTP_ENDPOINT }}
+          --parameter-overrides SUMO_LOG_LEVEL=info,SUMO_MAX_RETRY=3,SUMO_HTTP_ENDPOINT=${{ secrets.SUMO_HTTP_ENDPOINT }}
       # Deploy on AWS
       - run: sam deploy --no-fail-on-empty-changeset
