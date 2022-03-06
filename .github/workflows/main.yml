@@ -24,7 +24,6 @@ jobs:
         aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws_region: us-east-1
-        environment: SUMO_LOG_LEVEL=info,SUMO_MAX_RETRY=3,SUMO_HTTP_ENDPOINT=${{ secrets.SUMO_HTTP_ENDPOINT }}
         function_name: webScrapersProd
         zip_file: webScrapersProd.zip
         dry_run: true
