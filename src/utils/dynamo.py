@@ -70,7 +70,7 @@ def write_to_dynamo(
     dateTimeString = now.strftime("%Y-%m-%d  %X  %z")
     isoString = now.isoformat()
 
-    # Remove duplicate strings and create entries into the 'general' attribute of the dynamo item/object
+    # Remove duplicate strings and create entries into the 'general' attribute of the dynamo item/object.
     uniqueGeneralList = []
     general_list = []
     for line in general:
