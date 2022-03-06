@@ -64,12 +64,6 @@ def write_to_dynamo(
     # Remove any strings from the general array if they are empty/whitespace only (breaks translator otherwise)
     general = [x for x in general if x.strip()]
 
-    # If we're testing we're find to GET and object out of dynamo
-    # But we don't want to overwrite the 'old' version of the object that is used for comparison
-    # (which is used to tell us if we need to translate it or not)
-    if isTesting:
-        existingItem["country"]["S"] = existingItem["country"]["S"] + testSuffix
-
     now = datetime.now()
     dateTimeString = now.strftime("%Y-%m-%d  %X  %z")
     isoString = now.isoformat()
