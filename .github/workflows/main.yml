@@ -26,4 +26,4 @@ jobs:
         aws_region: us-east-1
         function_name: webScrapersProd
         zip_file: webScrapersProd.zip
-        dry_run: true
+        dry_run: false
