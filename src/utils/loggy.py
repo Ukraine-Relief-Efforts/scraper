@@ -15,7 +15,7 @@ def init_logging():
 
     print("Sumo Secrets Path: " + sumo_secrets_path)
     print("Log Config Path: " + log_config_path)
-    
+
     try:
         sumo_secrets = json.loads(sumo_secrets_path.read_text())
         log_config = json.loads(log_config_path.read_text())
