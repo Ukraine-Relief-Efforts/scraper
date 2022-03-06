@@ -15,7 +15,7 @@ jobs:
     - uses: actions/setup-python@v2
     - run: pip install -r requirements.txt --target=dependencies/python
     - run: echo ${{ secrets.DISCORD_SCRAPER_LOG_WEBHOOK }} >> ./src/utils/.discord-webhook
-    - run: echo ${{ secrets.SUMO_CODE }} >> ./src/utils/.sumo-code.json
+    - run: echo ${{ secrets.SUMO_CODE }} >> ./src/utils/.sumo-code
     - name: Package Zip
       run: cd ./src; zip -r ../webScrapersProd.zip ./*; cd ..;
     - name: AWS Lambda Deploy

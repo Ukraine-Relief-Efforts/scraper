@@ -7,12 +7,15 @@ from pathlib import Path
 def init_logging():
     """Initialize logging."""
     base_dir = Path(__file__).parent
-    sumo_secrets_path = base_dir / ".sumo-code.json"
+    sumo_secrets_path = base_dir / ".sumo-code"
     log_config_path = base_dir / "logConfig.json"
 
     try:
-        sumo_secrets = json.loads(sumo_secrets_path.read_text())
-        log_config = json.loads(log_config_path.read_text())
+        with open(sumo_secrets_path, 'r') as sumo_file:
+            sumo_secrets = sumo_file.read().strip()
+        with open(log_config_path, 'r') as log_file:
+            log_config = log_file.read().strip()
+
         log_config = log_config.replace("${sumoCode}", sumo_secrets["sumoCode"])
         logging.config.dictConfig(log_config)
     except Exception:
