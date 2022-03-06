@@ -1,8 +1,9 @@
+import logging
+
 import requests
+
 import xmltodict
-
 from scrapers.base_scraper import BaseScraper
-
 from utils.constants import HEADERS
 from utils.dynamo import write_to_dynamo
 from utils.utils import get_reception_points, get_website_content, normalize
@@ -15,7 +16,7 @@ HUNGARY_KML = (
 
 class HungaryScraper(BaseScraper):
     def scrape(self, event=""):
-        print("Scraping Hungary (HU)")
+        logging.info("Scraping Hungary (HU)")
 
         # Start with general border info
         content = get_website_content(HUNGARY_URL)

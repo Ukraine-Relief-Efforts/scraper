@@ -1,3 +1,5 @@
+import logging
+
 from scrapers.base_scraper import BaseScraper
 from utils.dynamo import write_to_dynamo
 from utils.reception import Reception
@@ -9,7 +11,7 @@ ROMANIA_MAP_URL = "https://www.politiadefrontiera.ro/ro/traficonline/?dt=1&vw=2"
 
 class RomaniaScraper(BaseScraper):
     def scrape(self, event=""):
-        print("Scraping Romania (RO)")
+        logging.info("Scraping Romania (RO)")
 
         # Start with general border info
         content = get_website_content(ROMANIA_INFO_URL)

@@ -1,0 +1,27 @@
+{
+    "version": 1,
+    "disable_existing_loggers": true,
+    "formatters": {
+        "default": {
+            "format": "%(levelname)s: [%(name)s:] [%(asctime)s]:[%(filename)s:%(lineno)d]: %(funcName)s: %(message)s",
+            "datefmt": "%Y-%m-%d %H:%M:%S"
+        }
+    },
+    "handlers": {
+        "sumologger": {
+            "source_name": "scraper",
+            "host": "endpoint5.collection.us2.sumologic.com",
+            "level": "INFO",
+            "class": "sumopy.Handler",
+            "url": "/receiver/v1/http/${sumoCode}",
+            "formatter": "json"
+        }
+    },
+    "loggers": {
+        "": {
+            "handlers": ["sumologger"],
+            "level": "INFO",
+            "propagate": false
+        }
+    }
+}
