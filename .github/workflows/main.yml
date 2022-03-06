@@ -17,7 +17,7 @@ jobs:
     - run: echo ${{ secrets.DISCORD_SCRAPER_LOG_WEBHOOK }} >> ./src/utils/.discord-webhook
     - run: echo ${{ secrets.SUMO_CODE }} >> ./src/utils/.sumo-code.json
     - name: Package Zip
-      run: zip webScrapersProd.zip ./src/*
+      run: zip webScrapersProd.zip ./src
     - name: AWS Lambda Deploy
       uses: appleboy/lambda-action@master
       with:
