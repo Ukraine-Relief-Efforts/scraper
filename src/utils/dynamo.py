@@ -7,6 +7,36 @@ TABLE_NAME = "TechForUkraine-CIG"
 client = boto3.client("dynamodb", region_name="us-east-1")
 
 
+class DataLossError(Exception):
+    """
+    Exception representing catastrophic data loss.
+
+    This would likely stem from the scraped website restructuring.
+    """
+
+
+def _check_for_data_loss(general: list, reception: list, old_item: dict):
+
+    try:
+        old_general = old_item["general"]["L"]
+    except KeyError:
+        old_general = []
+
+    try:
+        old_reception = old_item["reception"]["L"]
+    except KeyError:
+        old_reception = []
+
+    def check_data(new, old):
+        new_len = len(new)
+        old_len = len(old)
+        if old_len > 0 and new_len < 1:
+            raise DataLossError()
+
+    check_data(new=general, old=old_general)
+    check_data(new=reception, old=old_reception)
+
+
 def write_to_dynamo(
     country: str, event: object, general: list, reception: list, source: str
 ):
@@ -15,6 +45,7 @@ def write_to_dynamo(
 
     Args:
         country (str): The name of the country.
+        event (str or dict?): The aws event that triggered the lambda?
         general (list[str]): More general information.
         reception (list): Border crossing points.
     """
@@ -68,17 +99,21 @@ def write_to_dynamo(
     # If we're testing, we don't want to mess with exiting data that is being used by the website
     # So we write whatever we've scraped with a name that has a suffix defined in the lambda event.
     countryName = (country + testSuffix) if isTesting else country
-    client.put_item(
-        TableName=TABLE_NAME,
-        Item={
-            "country": {"S": countryName},
-            "general": {"L": general_list},
-            "reception": {"L": reception_list},
-            "source": {"S": source},
-            "isoFormat": {"S": isoString},
-            "dateTime": {"S": dateTimeString},
-        },
-    )
+    try:
+        client.put_item(
+            TableName=TABLE_NAME,
+            Item={
+                "country": {"S": countryName},
+                "general": {"L": general_list},
+                "reception": {"L": reception_list},
+                "source": {"S": source},
+                "isoFormat": {"S": isoString},
+                "dateTime": {"S": dateTimeString},
+            },
+        )
+        print("Successfully scraped " + countryName + " and inserted into DyanamoDB")
+    except Exception as exception:
+        print("An error occurred inserting " + countryName + " into DynamoDB")
 
 
 # Get the item from dynamo

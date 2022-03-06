@@ -1,24 +1,29 @@
----
-name: Deploy the lambda
+name: deploy to lambda
+
 on:
+  workflow_dispatch:
   push:
     branches:
       - master
+
 jobs:
-  build:
+  deploy:
+    name: deploy lambda function
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
-      - uses: actions/setup-python@v2
-      - run: pip install -r requirements.txt --target=dependencies/python
-      - run: echo ${{ secrets.DISCORD_SCRAPER_LOG_WEBHOOK }} >> ./src/utils/.discord-webhook
-      - uses: aws-actions/setup-sam@v1
-      - uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: '${{ secrets.AWS_ACCESS_KEY_ID }}'
-          aws-secret-access-key: '${{ secrets.AWS_SECRET_ACCESS_KEY }}'
-          aws-region: 'us-east-1'
-      # Build using SAM
-      - run: sam build --use-container --template-file template.yml
-      # Deploy on AWS
-      - run: sam deploy --no-fail-on-empty-changeset
+    - uses: actions/checkout@v1
+    - uses: actions/setup-python@v2
+    - run: pip install -r requirements.txt --target=dependencies/python
+    - run: echo ${{ secrets.DISCORD_SCRAPER_LOG_WEBHOOK }} >> ./src/utils/.discord-webhook
+    - name: Package Zip
+      run: zip webScrapersProd.zip ./*
+    - name: AWS Lambda Deploy
+      uses: appleboy/lambda-action@master
+      with:
+        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws_region: us-east-1
+        environment: SUMO_LOG_LEVEL=info,SUMO_MAX_RETRY=3,SUMO_HTTP_ENDPOINT=${{ secrets.SUMO_HTTP_ENDPOINT }}
+        function_name: webScrapersProd
+        zip_file: webScrapersProd.zip
+        dry_run: true

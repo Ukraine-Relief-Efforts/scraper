@@ -20,6 +20,14 @@ Resources:
       Handler: lambda_function.lambda_handler
       Runtime: python3.9
       FunctionName: webScrapersProd
+      Environment:
+        Parameters:
+          SUMO_LOG_LEVEL:
+            Type: String
+          SUMO_MAX_RETRY:
+            Type: String
+          SUMO_HTTP_ENDPOINT:
+            Type: String
       # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
       # Events:
       Policies:
@@ -31,5 +39,13 @@ Resources:
       Description: Dependencies for scraper
       ContentUri: dependencies/
       CompatibleRuntimes:
-            - python3.9
+        - python3.9
       RetentionPolicy: Delete
+
+Parameters:
+  SUMO_LOG_LEVEL:
+    Type: String
+  SUMO_MAX_RETRY:
+    Type: String
+  SUMO_HTTP_ENDPOINT:
+    Type: String
