@@ -1,7 +1,9 @@
+import logging
+
 from scrapers.base_scraper import BaseScraper
+from utils.dynamo import write_to_dynamo
 from utils.reception import Reception
 from utils.utils import get_website_content, gmaps_url_to_lat_lon, normalize
-from utils.dynamo import write_to_dynamo
 
 POLAND_PL_URL = "https://www.gov.pl/web/udsc/ukraina2"
 POLAND_PL_RECEPTION_URL = "https://www.gov.pl/web/udsc/punkty-recepcyjne2"
@@ -18,19 +20,19 @@ class PolandScraper(BaseScraper):
         # self.scrape_poland_en(event)
 
     def scrape_poland_pl(self, event=""):
-        print("Scraping Poland (PL)")
+        logging.info("Scraping Poland (PL)")
 
         """calls scrape_poland with the appropriate arguments for the pl website"""
         self.scrape_poland(POLAND_PL_URL, "pl", event)
 
     # def scrape_poland_ua(self, event=""):
-    #     print("Scraping Poand (UA)")
+    #     logging.info("Scraping Poand (UA)")
 
     #     """calls scrape_poland with the appropriate arguments for the ua website"""
     #     self.scrape_poland(POLAND_UA_URL, "ua", event)
 
     # def scrape_poland_en(self, event=""):
-    #     print("Scraping Poland (EN)")
+    #     logging.info("Scraping Poland (EN)")
 
     #     """calls scrape_poland with the appropriate arguments for the en website"""
     #     self.scrape_poland(POLAND_EN_URL, "en", event)

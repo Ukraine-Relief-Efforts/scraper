@@ -1,6 +1,8 @@
 """Functionality related to DynamoDB."""
-import boto3
+import logging
 from datetime import datetime
+
+import boto3
 
 TABLE_NAME = "TechForUkraine-CIG"
 
@@ -105,14 +107,14 @@ def write_to_dynamo(
                 "dateTime": {"S": dateTimeString},
             },
         )
-        print("Successfully scraped " + countryName + " and inserted into DyanamoDB")
+        logging.info("Successfully scraped %s and inserted into DyanamoDB", countryName)
     except Exception as exception:
-        print("An error occurred inserting " + countryName + " into DynamoDB")
+        logging.exception("An error occurred inserting %s into DynamoDB", countryName)
 
 
 # Get the item from dynamo
 def get_existing_object(country: str):
-    print("Getting dynamo object for country " + country)
+    logging.info("Getting dynamo object for country %s...", country)
     return client.get_item(TableName=TABLE_NAME, Key={"country": {"S": country}})[
         "Item"
     ]

@@ -1,13 +1,15 @@
 import json
 import logging
 import unicodedata
-import requests
-from bs4 import BeautifulSoup
-from utils.constants import LOGFILE_PATH, HEADERS
-from utils.reception import Reception
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
+
+import requests
+from bs4 import BeautifulSoup
+
+from utils.constants import HEADERS, LOGFILE_PATH
+from utils.reception import Reception
 
 
 def normalize(text):
@@ -120,4 +122,4 @@ def log_to_discord(logs: list[DiscordLogData]):
         requests.post(url, json=content)
     except Exception as exception:
         # Don't fail execution if logging fails
-        print(exception)
+        logging.exception("Failed to send Discord notification.")
