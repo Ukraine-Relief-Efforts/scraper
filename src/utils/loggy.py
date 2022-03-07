@@ -14,7 +14,7 @@ def init_logging():
     try:
         sumo_code = sumo_code_path.read_text().strip()
         raw_config = log_config_path.read_text()
-        text_config = raw_config.replace('${sumoCode}', sumo_code)
+        text_config = raw_config.replace("${sumoCode}", sumo_code)
         log_config = json.loads(text_config)
         logging.config.dictConfig(log_config)
     except Exception:
