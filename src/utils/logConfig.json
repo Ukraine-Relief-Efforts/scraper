@@ -5,21 +5,34 @@
         "default": {
             "format": "%(levelname)s: [%(name)s:] [%(asctime)s]:[%(filename)s:%(lineno)d]: %(funcName)s: %(message)s",
             "datefmt": "%Y-%m-%d %H:%M:%S"
+        },
+        "json": {
+            "format": "%(levelname)s %(name)s %(message)s %(levelno)d",
+            "datefmt": "%Y-%m-%d %H:%M:%S",
+            "class": "pythonjsonlogger.jsonlogger.JsonFormatter"
         }
     },
     "handlers": {
         "sumologger": {
             "source_name": "scraper",
-            "host": "endpoint5.collection.us2.sumologic.com",
+            "host": "endpoint4.collection.sumologic.com",
             "level": "INFO",
             "class": "sumopy.Handler",
             "url": "/receiver/v1/http/${sumoCode}",
             "formatter": "json"
+        },
+        "console": {
+            "class": "logging.StreamHandler",
+            "level": "INFO",
+            "stream": "ext://sys.stdout"
         }
     },
     "loggers": {
         "": {
-            "handlers": ["sumologger"],
+            "handlers": [
+                "sumologger",
+                "console"
+            ],
             "level": "INFO",
             "propagate": false
         }
