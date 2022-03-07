@@ -8,3 +8,4 @@ outputs
 .tox
 **/.DS_Store
 .DS_Store
+.sumo-code
