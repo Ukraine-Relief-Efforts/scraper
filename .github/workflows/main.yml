@@ -15,15 +15,15 @@ jobs:
     - uses: actions/setup-python@v2
     - run: pip install -r requirements.txt --target=dependencies/python
     - run: echo ${{ secrets.DISCORD_SCRAPER_LOG_WEBHOOK }} >> ./src/utils/.discord-webhook
+    - run: echo ${{ secrets.SUMO_CODE }} >> ./src/utils/.sumo-code.json
     - name: Package Zip
-      run: zip webScrapersProd.zip ./*
+      run: cd ./src; zip -r ../webScrapersProd.zip ./*; cd ..;
     - name: AWS Lambda Deploy
       uses: appleboy/lambda-action@master
       with:
         aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws_region: us-east-1
-        environment: SUMO_LOG_LEVEL=info,SUMO_MAX_RETRY=3,SUMO_HTTP_ENDPOINT=${{ secrets.SUMO_HTTP_ENDPOINT }}
         function_name: webScrapersProd
         zip_file: webScrapersProd.zip
-        dry_run: true
+        dry_run: false

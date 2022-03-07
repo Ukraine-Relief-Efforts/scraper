@@ -1,6 +1,8 @@
 """Functionality related to DynamoDB."""
-import boto3
+import logging
 from datetime import datetime
+
+import boto3
 
 TABLE_NAME = "TechForUkraine-CIG"
 
@@ -64,36 +66,11 @@ def write_to_dynamo(
     # Remove any strings from the general array if they are empty/whitespace only (breaks translator otherwise)
     general = [x for x in general if x.strip()]
 
-    # Get the existing object, that object will be PUT back into dynamo, but marked as 'old' so it can be compared.
-    # The comparison will be used to determine if the translator needs to translate any of the newly scraped data or not.
-    key_exists = True
-    try:
-        existingItem = get_existing_object(country)
-    except KeyError:
-        key_exists = False
-
-    # If we're testing we're find to GET and object out of dynamo
-    # But we don't want to overwrite the 'old' version of the object that is used for comparison
-    # (which is used to tell us if we need to translate it or not)
-    if isTesting:
-        existingItem["country"]["S"] = existingItem["country"]["S"] + testSuffix
-
-    # Mark the existing item as 'old', then scrape to get the most 'up to date' information.
-    if key_exists:
-        # Let's check for catastrophic data loss, first
-        _check_for_data_loss(
-            general=general,
-            reception=reception,
-            old_item=existingItem,
-        )
-
-        update_existing_item_as_old(existingItem)
-
     now = datetime.now()
     dateTimeString = now.strftime("%Y-%m-%d  %X  %z")
     isoString = now.isoformat()
 
-    # Remove duplicate strings and create entries into the 'general' attribute of the dynamo item/object
+    # Remove duplicate strings and create entries into the 'general' attribute of the dynamo item/object.
     uniqueGeneralList = []
     general_list = []
     for line in general:
@@ -130,22 +107,14 @@ def write_to_dynamo(
                 "dateTime": {"S": dateTimeString},
             },
         )
-        print("Successfully scraped " + countryName + " and inserted into DyanamoDB")
+        logging.info("Successfully scraped %s and inserted into DyanamoDB", countryName)
     except Exception as exception:
-        print("An error occurred inserting " + countryName + " into DynamoDB")
+        logging.exception("An error occurred inserting %s into DynamoDB", countryName)
 
 
 # Get the item from dynamo
 def get_existing_object(country: str):
-    print("Getting dynamo object for country " + country)
+    logging.info("Getting dynamo object for country %s...", country)
     return client.get_item(TableName=TABLE_NAME, Key={"country": {"S": country}})[
         "Item"
     ]
-
-
-# Change item name (append -old) and PUT the item back in dynamo
-def update_existing_item_as_old(item: object):
-    print("Marking existing country object as 'old'")
-    item["country"]["S"] = item["country"]["S"] + "-old"
-
-    client.put_item(TableName=TABLE_NAME, Item=item)
