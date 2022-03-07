@@ -9,6 +9,7 @@ import requests
 
 # Import poland scraper
 sys.path.insert(0, os.path.join("..", "src"))
+sys.path.insert(1, os.path.join("..", "src", "utils"))
 from scrapers.poland import PolandScraper, POLAND_PL_RECEPTION_URL, POLAND_PL_URL
 
 html = requests.get(POLAND_PL_RECEPTION_URL)
@@ -47,8 +48,8 @@ def test_scrape(pls):
     assert pls.scrape() is None
 
 
-def test_scrape_poland_pl():
-    pass
+def test_scrape_poland_pl(pls):
+    assert pls.scrape_poland_pl() is None
 
 
 @pytest.fixture(params=["pl", "en", "ua"])
