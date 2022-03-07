@@ -56,27 +56,7 @@ def test_scrape_poland(pls, request):
     pass
 
 
-# From test_dynamo.py
-# @pytest.fixture(autouse=True)
-# def put_item():
-#     """Mock dynamo.  Stupid dynamo."""
-#     with patch("utils.dynamo.client.put_item", MagicMock(name="put_item")) as put_item:
-#         yield put_item
-
-# @pytest.fixture(autouse=True)
-# def test_scrape_poland(put_item):
-#     url = poland.POLAND_PL_URL
-#     p = PolandScraper().scrape_poland(url, "en", "")
-#     assert isinstance(p, list)
-
-
 # TODO:
 # - Figure out dynmo write bypass for testing (still test methods)
 # - Write tests for rest of PolandScraper
 # - Write tests for other country scrapers
-
-if __name__ == "__main__":
-    p = PolandScraper()
-    print(soup)
-    recep_arr = p.get_reception_points_en(soup)
-    print(recep_arr)
