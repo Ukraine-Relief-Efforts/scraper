@@ -66,6 +66,17 @@ def write_to_dynamo(
     # Remove any strings from the general array if they are empty/whitespace only (breaks translator otherwise)
     general = [x for x in general if x.strip()]
 
+    # If there's already data, try to prevent it from being overwritten with nothing
+    try:
+        existingItem = get_existing_object(country)
+        _check_for_data_loss(
+            general=general,
+            reception=reception,
+            old_item=existingItem,
+        )
+    except KeyError:
+        pass
+
     now = datetime.now()
     dateTimeString = now.strftime("%Y-%m-%d  %X  %z")
     isoString = now.isoformat()
