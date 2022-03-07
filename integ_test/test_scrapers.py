@@ -7,6 +7,7 @@ from scrapers.hungary_hu import HungaryScraper
 from scrapers.moldova_ro import MoldovaScraper
 from scrapers.poland import PolandScraper
 from scrapers.romaina_ro import RomaniaScraper
+from scrapers.slovakia_sk import SlovakiaScraper
 
 
 @pytest.fixture(autouse=True)
@@ -74,7 +75,8 @@ def check_common(put_item):
 
         assert len(names) > 5
         # All these say 'WIP' right now
-        # assert len(addresses) > 5
+        # Or not? Think I fixed that
+        assert len(addresses) > 5
 
         return item, general, reception
 
@@ -92,6 +94,10 @@ def test_scrape_romania_ro(check_common):
     scraper.scrape()
     check_common("romania-ro")
 
+def test_scrape_slovakia_sk(check_common):
+    scraper = SlovakiaScraper()
+    scraper.scrape()
+    check_common("slovakia-sk")
 
 def test_scrape_hungary_hu(check_common):
     # This one's too big...just doing a spot check
