@@ -35,9 +35,10 @@ def test_scrape(hun):
 def test_get_general(hun, content):
     text_arr = hun._get_general(content)
     assert isinstance(text_arr, list)
-    assert len(text_arr) > 0
+    assert text_arr
 
 
 def test_get_reception_points(hun):
     recep_pts = hun._get_reception_points()
     assert isinstance(recep_pts, list)
+    assert recep_pts
