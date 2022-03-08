@@ -2,17 +2,11 @@
 
 import os
 import sys
-
-
-import os
-import sys
-from unittest.mock import MagicMock, patch
 import pytest
-from bs4 import BeautifulSoup
 import requests
 import xmltodict
 
-# Import hungary scraper
+# Import moldova scraper
 sys.path.insert(0, os.path.join("..", "src"))
 sys.path.insert(1, os.path.join("..", "src", "utils"))
 
