@@ -3,6 +3,7 @@
 import os
 import sys
 import pytest
+from unittest.mock import patch, MagicMock
 
 sys.path.insert(0, os.path.join("..", "src"))
 sys.path.insert(1, os.path.join("..", "src", "utils"))
@@ -24,8 +25,16 @@ def content():
     return content
 
 
-def test_scrape(rom):
-    assert rom.scrape(event={"testSuffix": "test_romania"}) is None
+# @pytest.fixture()
+# def write_to_dynamo():
+#     """Mock dynamo write"""
+#     with patch("scrapers.romaina_ro.RomaniaScraper.write_to_dynamo", MagicMock(name="write_to_dynamo")) as dynamo_write:  #
+#         yield dynamo_write
+
+
+@patch("scrapers.romaina_ro.RomaniaScraper.write_to_dynamo", True)
+def test_scrape(rom, write_dynamo):
+    assert rom.scrape(event={"testSuffix": "test_romania"}) is True
 
 
 def test_get_general(rom, content):
