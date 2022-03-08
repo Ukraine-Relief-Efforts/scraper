@@ -25,7 +25,7 @@ def content():
 
 
 def test_scrape(rom):
-    assert rom.scrape() is None
+    assert rom.scrape(event={"testSuffix": "test_romania"}) is None
 
 
 def test_get_general(rom, content):
