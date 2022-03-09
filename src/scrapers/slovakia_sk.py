@@ -22,14 +22,14 @@ SLOVAKIA_KML = (
 #    2) it would be hard to automatically edit it down because there's tonnes of unnecesary information
 # Source: https://www.mic.iom.sk/en/news/758-info-ukraine.html
 HARD_CODED_GENERAL = [
-    "Pravidelne aktualizované informácie o situácii na slovenských hraniciach nájdete na stránkach Facebook slovenskej polície a Ministerstva vnútra SR.",
-    "Občania Ukrajiny s biometrickým pasom môžu vstupovať do Slovenska pod bezvízovým režimom a pobyt na Slovensku bez víza maximálne 90 dní v každom 180-dňovom období.",
-    "Podľa informácií z Ministerstva vnútra Slovenskej republiky vstup je v súčasnosti povolený všetkým osobám utekajúcim do konfliktu. Po individuálnom posúdení bude vstup povolený aj osobám, ktoré nemajú platný cestovný doklad (biometrický pas, vízum).",
-    "Osoby, ktoré prichádzajú zo susednej krajiny, kde boli vystavení hrozbe počas ozbrojeného konfliktu bezprostredne pred ich príchodom a osobami, ktoré potrebujú medzinárodnú ochranu alebo cestovanie na iné humanitárne dôvody, spĺňajú podmienky vstupu na Slovensko uvedené v kontexte a pandémia koronavírusu.",
-    "Nemusia sa zaregistrovať na http://korona.gov.sk/ehranica, keď prídu na Slovensko a nepodliehajú povinnosti izolácie. ",
-    "Po vstupe do Slovenska je potrebné nahlásiť začiatok vášho pobytu do 3 pracovných dní - relevantný formulár na prevzatie a viac informácií na https://www.minv.sk/?reporting-residence-1",
-    "Všetky osoby utesnené konfliktu, ktoré boli povolené vstupom cez slovenskú hranicu (zvyčajne so slovenskou vstupnou pečiatkou v ich pase), sú povolené krátkodobý pobyt až do 90 dní.",
-    "Viac informácií nájdete tu: https://www.mic.iom.sk/en/news/758-info-ukraine.html",
+    "Pravidelne aktualizované informácie o situácii na slovenských hraniciach nájdete na Facebooku Polície SR a Ministerstva vnútra SR.",
+    "Občania Ukrajiny s biometrickým pasom môžu na Slovensko vstúpiť v rámci bezvízového styku a zdržiavať sa na Slovensku bez víz maximálne 90 dní v akomkoľvek 180-dňovom období.",
+    "Podľa informácií Ministerstva vnútra SR (tlačová správa TU, informácia na Facebooku TU) je momentálne vstup umožnený všetkým osobám, ktoré utekajú pred vojnovým konfliktom. Vstup na územie Slovenskej republiky sa po individuálnom posúdení umožňuje aj osobám, ktoré nemajú platný cestovný doklad (biometrický pas, prípadne vízum).",
+    "Osoby prichádzajúce zo susedného štátu, v ktorom boli bezprostredne pred príchodom vystavené ohrozeniu počas ozbrojeného konfliktu a osoby, ktoré potrebujú medzinárodnú ochranu alebo cestujú z iných humanitárnych dôvodov spĺňajú podmienky vstupu na Slovensko stanovené v súvislosti s pandémiou koronavírusu.",
+    "Pri príchode na Slovensko sa tieto osoby nemusia registrovať na stránke http://korona.gov.sk/ehranica a nevzťahuje sa na nich ani povinnosť izolácie. ",
+    "Po vstupe na územie SR je potrebné hlásiť začiatok pobytu do 3 pracovných dní od vstupu – formulár na stiahnutie a bližšie informácie tu https://www.minv.sk/?hlasenie-pobytu-1",
+    "Všetkým osobám, ktoré utekajú pred vojnovým konfliktom a ktorým bol umožnený vstup cez slovenskú hrancicu (spravidla majú v pase vstupnú slovenskú pečiatku), je umožnený krátkodobý pobyt do 90 dní.",
+    "Viac informácií nájdete tu: https://www.mic.iom.sk/en/news/758-info-ukraine.html (en) https://www.mic.iom.sk/sk/novinky/757-info-ukrajina.html (sk)",
 ]
 
 
