@@ -35,7 +35,7 @@ class SlovakiaScraper(BaseScraper):
         logging.info("Scraping Slovakia (SK)")
         general = self._get_general()
         reception_arr = self._get_reception_points()
-        write_to_dynamo("slovakia-sk", event, general, reception_arr, SLOVAKIA_URL)
+        write_to_dynamo("slovakia-sk", event, general, reception_arr, SLOVAKIA_GENERAL_URL)
 
     def _get_general(self):
         content = get_website_content(SLOVAKIA_GENERAL_URL)
