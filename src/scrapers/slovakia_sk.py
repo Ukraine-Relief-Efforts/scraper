@@ -8,12 +8,14 @@ from utils.reception import Reception
 from utils.utils import get_website_content, normalize
 from utils.constants import HEADERS
 
-#not used for some reason
-#TODO use it to get addresses?
-#SLOVAKIA_URL = "https://www.minv.sk/?hranicne-priechody-1"
+# not used for some reason
+# TODO use it to get addresses?
+# SLOVAKIA_URL = "https://www.minv.sk/?hranicne-priechody-1"
 
 SLOVAKIA_GENERAL_URL = "https://www.minv.sk/?tlacove-spravy&sprava=vstup-na-slovensko-bez-povinnosti-karanteny"
-SLOVAKIA_KML = "https://www.google.com/maps/d/kml?forcekml=1&mid=1umLgEK-j5BHcJAvRBZMFtWztNzhWwgoP"
+SLOVAKIA_KML = (
+    "https://www.google.com/maps/d/kml?forcekml=1&mid=1umLgEK-j5BHcJAvRBZMFtWztNzhWwgoP"
+)
 
 # Hard code this because:
 #    1) the website is annoying
@@ -30,30 +32,36 @@ HARD_CODED_GENERAL = [
     "More information can be found here: https://www.mic.iom.sk/en/news/758-info-ukraine.html",
 ]
 
+
 class SlovakiaScraper(BaseScraper):
     def scrape(self, event=""):
         logging.info("Scraping Slovakia (SK)")
         general = self._get_general()
         reception_arr = self._get_reception_points()
-        write_to_dynamo("slovakia-sk", event, general, reception_arr, SLOVAKIA_GENERAL_URL)
+        write_to_dynamo(
+            "slovakia-sk", event, general, reception_arr, SLOVAKIA_GENERAL_URL
+        )
 
     def _get_general(self):
         content = get_website_content(SLOVAKIA_GENERAL_URL)
         target_text = "Zmeny v súvislosti s aktuálnym dianím na  Ukrajine"
-        antitarget_text = "Vstup na Slovensko bez karantény podmienený súhlasom ministerstva vnútra"
+        antitarget_text = (
+            "Vstup na Slovensko bez karantény podmienený súhlasom ministerstva vnútra"
+        )
         finding = False
         data = []
         for tag in list(content.find(id="main-content"))[0]:
             if tag.name == "h3" and str(tag.string) == antitarget_text:
                 finding = False
-            if finding: data.append(" ".join(tag.stripped_strings))
+            if finding:
+                data.append(" ".join(tag.stripped_strings))
             if tag.name == "h3" and str(tag.string) == target_text:
                 finding = True
 
         data = [n for n in data if n]
         data.extend(HARD_CODED_GENERAL)
         return data
-        
+
     def _get_reception_points(self) -> list[Reception]:
         # stolen from https://github.com/Aziroshin/scraper/commits/master
         kml_str = requests.get(SLOVAKIA_KML, headers=HEADERS).content
@@ -68,8 +76,8 @@ class SlovakiaScraper(BaseScraper):
         for placemark in placemarks:
             r = Reception()
             r.name = normalize(placemark["name"])
-            r.address = r.name #TODO temporary
-            coord = placemark["Point"]["coordinates"].split(',')
+            r.address = r.name  # TODO temporary
+            coord = placemark["Point"]["coordinates"].split(",")
             r.lon = coord[0].strip()
             r.lat = coord[1].strip()
             reception_points.append(r)

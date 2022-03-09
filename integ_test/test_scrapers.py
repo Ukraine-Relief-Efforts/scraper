@@ -72,7 +72,7 @@ def check_common(put_item):
         # probably wrong
         assert len(general) > 5
         if country == "slovakia-sk":
-            #limitation of slovakia, there are only 4 checkpoints
+            # limitation of slovakia, there are only 4 checkpoints
             assert len(reception) >= 4
         else:
             assert len(reception) > 5
@@ -97,10 +97,12 @@ def test_scrape_romania_ro(check_common):
     scraper.scrape()
     check_common("romania-ro")
 
+
 def test_scrape_slovakia_sk(check_common):
     scraper = SlovakiaScraper()
     scraper.scrape()
     check_common("slovakia-sk")
+
 
 def test_scrape_hungary_hu(check_common):
     # This one's too big...just doing a spot check
