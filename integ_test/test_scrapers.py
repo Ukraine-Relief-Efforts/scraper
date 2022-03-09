@@ -71,12 +71,15 @@ def check_common(put_item):
         # These are very low numbers, and if we're below this, something is
         # probably wrong
         assert len(general) > 5
-        assert len(reception) > 5
-
-        assert len(names) > 5
-        # All these say 'WIP' right now
-        # Or not? Think I fixed that
-        assert len(addresses) > 5
+        if country == "slovakia-sk":
+            #limitation of slovakia, there are only 4 checkpoints
+            assert len(reception) >= 4
+        else:
+            assert len(reception) > 5
+            assert len(names) > 5
+            # All these say 'WIP' right now
+            # Or not? Think I fixed that
+            assert len(addresses) > 5
 
         return item, general, reception
 
