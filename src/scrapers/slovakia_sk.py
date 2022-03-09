@@ -8,12 +8,15 @@ from utils.reception import Reception
 from utils.utils import get_website_content, normalize
 from utils.constants import HEADERS
 
-SLOVAKIA_URL = "https://www.minv.sk/?hranicne-priechody-1"
+#not used for some reason
+#TODO use it to get addresses?
+#SLOVAKIA_URL = "https://www.minv.sk/?hranicne-priechody-1"
+
 SLOVAKIA_GENERAL_URL = "https://www.minv.sk/?tlacove-spravy&sprava=vstup-na-slovensko-bez-povinnosti-karanteny"
 SLOVAKIA_KML = "https://www.google.com/maps/d/kml?forcekml=1&mid=1umLgEK-j5BHcJAvRBZMFtWztNzhWwgoP"
 
 # Hard code this because:
-#    1) the website is ass
+#    1) the website is annoying
 #    2) it would be hard to automatically edit it down because there's tonnes of unnecesary information
 # Source: https://www.mic.iom.sk/en/news/758-info-ukraine.html
 HARD_CODED_GENERAL = [
@@ -41,10 +44,10 @@ class SlovakiaScraper(BaseScraper):
         finding = False
         data = []
         for tag in list(content.find(id="main-content"))[0]:
-            if tag.name == "h3" and str(tag.contents[0]) == antitarget_text:
+            if tag.name == "h3" and str(tag.string) == antitarget_text:
                 finding = False
             if finding: data.append(" ".join(tag.stripped_strings))
-            if tag.name == "h3" and str(tag.contents[0]) == target_text:
+            if tag.name == "h3" and str(tag.string) == target_text:
                 finding = True
 
         data = [n for n in data if n]
@@ -52,6 +55,7 @@ class SlovakiaScraper(BaseScraper):
         return data
         
     def _get_reception_points(self) -> list[Reception]:
+        # stolen from https://github.com/Aziroshin/scraper/commits/master
         kml_str = requests.get(SLOVAKIA_KML, headers=HEADERS).content
         kml = xmltodict.parse(kml_str, dict_constructor=dict)
 
