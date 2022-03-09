@@ -22,14 +22,14 @@ SLOVAKIA_KML = (
 #    2) it would be hard to automatically edit it down because there's tonnes of unnecesary information
 # Source: https://www.mic.iom.sk/en/news/758-info-ukraine.html
 HARD_CODED_GENERAL = [
-    "Regularly updated information on the situation at the Slovak border can be found on the Facebook pages of the Slovak Police and the Slovak Ministry of the Interior.",
-    "Citizens of Ukraine with a biometric passport can enter Slovakia under the visa-free regime and stay in Slovakia without a visa for a maximum of 90 days in any 180-day period.",
-    "According to information from the Ministry of Interior of the Slovak Republic  entry is currently allowed to all persons fleeing the conflict. Upon individual assessment, entry will be allowed also to persons who do not have a valid travel document (biometric passport, visa).",
-    "Persons arriving from a neighbouring country where they have been exposed to a threat during an armed conflict immediately prior to their arrival and persons in need of international protection or travelling for other humanitarian reasons meet the conditions for entry to Slovakia set out in the context of a coronavirus pandemic.",
-    "They do not need to register at http://korona.gov.sk/ehranica when they arrive in Slovakia and are not subject to the isolation obligation.",
-    "After entering Slovakia, it is necessary to report the beginning of your stay within 3 business days – a relevant form to download and more information at https://www.minv.sk/?reporting-residence-1",
-    "All persons fleeing the conflict who have been allowed entry through the Slovak border (usually with a Slovak entry stamp in their passport) are allowed a short-term stay of up to 90 days.",
-    "More information can be found here: https://www.mic.iom.sk/en/news/758-info-ukraine.html",
+    "Pravidelne aktualizované informácie o situácii na slovenských hraniciach nájdete na stránkach Facebook slovenskej polície a Ministerstva vnútra SR.",
+    "Občania Ukrajiny s biometrickým pasom môžu vstupovať do Slovenska pod bezvízovým režimom a pobyt na Slovensku bez víza maximálne 90 dní v každom 180-dňovom období.",
+    "Podľa informácií z Ministerstva vnútra Slovenskej republiky vstup je v súčasnosti povolený všetkým osobám utekajúcim do konfliktu. Po individuálnom posúdení bude vstup povolený aj osobám, ktoré nemajú platný cestovný doklad (biometrický pas, vízum).",
+    "Osoby, ktoré prichádzajú zo susednej krajiny, kde boli vystavení hrozbe počas ozbrojeného konfliktu bezprostredne pred ich príchodom a osobami, ktoré potrebujú medzinárodnú ochranu alebo cestovanie na iné humanitárne dôvody, spĺňajú podmienky vstupu na Slovensko uvedené v kontexte a pandémia koronavírusu.",
+    "Nemusia sa zaregistrovať na http://korona.gov.sk/ehranica, keď prídu na Slovensko a nepodliehajú povinnosti izolácie. ",
+    "Po vstupe do Slovenska je potrebné nahlásiť začiatok vášho pobytu do 3 pracovných dní - relevantný formulár na prevzatie a viac informácií na https://www.minv.sk/?reporting-residence-1",
+    "Všetky osoby utesnené konfliktu, ktoré boli povolené vstupom cez slovenskú hranicu (zvyčajne so slovenskou vstupnou pečiatkou v ich pase), sú povolené krátkodobý pobyt až do 90 dní.",
+    "Viac informácií nájdete tu: https://www.mic.iom.sk/en/news/758-info-ukraine.html",
 ]
 
 
