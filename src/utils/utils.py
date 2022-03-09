@@ -74,20 +74,6 @@ def write_to_json(filename, text_arr, reception_arr, source):
         json.dump(data, f, indent=2, ensure_ascii=False)
 
 
-def setup_logger():
-    LOGGER = logging.getLogger("scraper")
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s - %(levelname)s - %(message)s",
-        datefmt="%d-%b-%y %H:%M:%S",
-        handlers=[
-            logging.FileHandler(LOGFILE_PATH, "a", "utf-8"),
-            logging.StreamHandler(),
-        ],
-    )
-    return LOGGER
-
-
 class LogLevelEnum(Enum):
     INFO = 562741
     DEBUG = 10227
