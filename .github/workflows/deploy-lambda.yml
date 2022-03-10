@@ -11,7 +11,7 @@ jobs:
     name: deploy lambda function
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v3
     - uses: actions/setup-python@v2
     - run: pip install -r requirements.txt --target=dependencies/python
     - run: echo ${{ secrets.DISCORD_SCRAPER_LOG_WEBHOOK }} >> ./src/utils/.discord-webhook
