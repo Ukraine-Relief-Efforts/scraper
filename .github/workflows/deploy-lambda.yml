@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - uses: actions/setup-python@v2
+    - uses: actions/setup-python@v3
     - run: pip install -r requirements.txt --target=dependencies/python
     - run: echo ${{ secrets.DISCORD_SCRAPER_LOG_WEBHOOK }} >> ./src/utils/.discord-webhook
     - run: echo ${{ secrets.SUMO_CODE }} >> ./src/utils/.sumo-code
