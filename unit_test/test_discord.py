@@ -32,3 +32,7 @@ def test_log_to_discord_without_config_does_not_raise(mrpost, simple_data):
 def test_log_to_discord_with_too_many_entries_does_not_log(hook, mrpost, simple_data):
     log_to_discord([simple_data for _ in range(11)] * 11)
     assert not mrpost.called
+
+def test_fail():
+    # TODO: Remove this failing test (I'm messing with the CI)
+    assert False
