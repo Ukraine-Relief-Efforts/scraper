@@ -7,6 +7,7 @@ from scrapers.hungary_hu import HungaryScraper
 from scrapers.moldova_ro import MoldovaScraper
 from scrapers.poland import PolandScraper
 from scrapers.romaina_ro import RomaniaScraper
+from scrapers.slovakia_sk import SlovakiaScraper
 
 
 @pytest.fixture(autouse=True)
@@ -70,11 +71,15 @@ def check_common(put_item):
         # These are very low numbers, and if we're below this, something is
         # probably wrong
         assert len(general) > 5
-        assert len(reception) > 5
-
-        assert len(names) > 5
-        # All these say 'WIP' right now
-        # assert len(addresses) > 5
+        if country == "slovakia-sk":
+            # limitation of slovakia, there are only 4 checkpoints
+            assert len(reception) >= 4
+        else:
+            assert len(reception) > 5
+            assert len(names) > 5
+            # All these say 'WIP' right now
+            # Or not? Think I fixed that
+            assert len(addresses) > 5
 
         return item, general, reception
 
@@ -91,6 +96,12 @@ def test_scrape_romania_ro(check_common):
     scraper = RomaniaScraper()
     scraper.scrape()
     check_common("romania-ro")
+
+
+def test_scrape_slovakia_sk(check_common):
+    scraper = SlovakiaScraper()
+    scraper.scrape()
+    check_common("slovakia-sk")
 
 
 def test_scrape_hungary_hu(check_common):
