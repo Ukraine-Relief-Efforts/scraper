@@ -1,24 +1,16 @@
-etup a basic development environment
+# Contributing
 
-Some contributors are new to setting up an environment, so I figured it would be a good time to write this.
+## Setting up a Python virtual environment
 
-Firstly, use a [virtual environment](https://docs.python.org/3/tutorial/venv.html)
-
-`python3 -m venv venv`
-
-The respective venv files have been safely set to be ignored in `.gitignore` for this structure, so it's safe to just create the venv in this folder (or whichever folder you want to keep your virtual environments in)
-
-Secondly, activate the environment
-
-`source ./venv/bin/activate`
-
-You should now be inside the virtual environment.
+We recommend you use virtual environments for Python development. You can learn more about virtual environments in
+Python's official documentation: https://docs.python.org/3/library/venv.html
 
 Now, you can install requirements
 
 `pip install -r requirements.txt`
 
-After this, kindly setup the pre-commit hooks. The pre-commit-hook library has been added to the requirements.txt, and you should have access to the pre-commit cli
+After this, kindly setup the pre-commit hooks. The pre-commit-hook library has been added to the requirements.txt, and
+you should have access to the pre-commit cli
 
 ```
 scraper git:add-precommit
