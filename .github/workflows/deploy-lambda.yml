@@ -25,19 +25,6 @@ jobs:
         aws-region: 'us-east-1'
 
     # Build using SAM
-    - run: |
-        sam build --use-container --template-file template.yml
+    - run: sam build --use-container --template-file ./build/aws/template.yml
     # Deploy on AWS
-    - run: sam deploy --no-fail-on-empty-changeset
-
-    # - name: Package Zip
-    #   run: cd ./src; zip -r ../webScrapersProd.zip ./*; cd ..;
-    # - name: AWS Lambda Deploy
-    #   uses: appleboy/lambda-action@master
-    #   with:
-    #     aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-    #     aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-    #     aws_region: us-east-1
-    #     function_name: webScrapersProd
-    #     zip_file: webScrapersProd.zip
-    #     dry_run: false
+    - run: sam deploy --no-fail-on-empty-changeset --config-file ./build/aws/samconfig.toml
