@@ -1,12 +1,13 @@
 import logging
+
 import requests
 import xmltodict
 
 from scrapers.base_scraper import BaseScraper
+from utils.constants import HEADERS
 from utils.dynamo import write_to_dynamo
 from utils.reception import Reception
 from utils.utils import get_website_content, normalize
-from utils.constants import HEADERS
 
 # not used for some reason
 # TODO use it to get addresses?

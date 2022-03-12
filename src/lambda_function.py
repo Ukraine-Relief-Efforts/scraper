@@ -1,11 +1,11 @@
 import logging
 from concurrent.futures import ThreadPoolExecutor
 
-from utils.loggy import init_logging
 from scrapers.hungary_hu import HungaryScraper
 from scrapers.moldova_ro import MoldovaScraper
 from scrapers.poland import PolandScraper
 from scrapers.romaina_ro import RomaniaScraper
+from utils.loggy import init_logging
 from utils.utils import DiscordLogData, LogLevelEnum, log_to_discord
 
 init_logging()

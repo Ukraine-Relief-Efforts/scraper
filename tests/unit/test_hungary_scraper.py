@@ -1,6 +1,8 @@
-import pytest
-from scrapers.hungary_hu import HungaryScraper
 from unittest.mock import MagicMock
+
+import pytest
+
+from scrapers.hungary_hu import HungaryScraper
 
 
 @pytest.fixture

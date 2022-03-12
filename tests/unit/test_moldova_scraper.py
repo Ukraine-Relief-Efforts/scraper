@@ -1,6 +1,8 @@
-import pytest
-from scrapers.moldova_ro import MoldovaScraper
 from unittest.mock import MagicMock
+
+import pytest
+
+from scrapers.moldova_ro import MoldovaScraper
 
 
 @pytest.fixture

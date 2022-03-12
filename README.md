@@ -19,7 +19,7 @@ Format (TBC):
 // JSON format.
 {
     "general": [ "general info about the border crossing.", "Usually split by sentences (in theory)"],
-    "reception": [ 
+    "reception": [
           {
                "qr": "image link",
                "lat": "53.034",

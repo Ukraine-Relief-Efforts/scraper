@@ -1,12 +1,12 @@
 from unittest.mock import MagicMock, patch
-import requests
 
 import pytest
+import requests
+import xmltodict
+from pyfakefs import fake_filesystem_unittest
 
 from utils import dynamo
 from utils.reception import Reception
-from pyfakefs import fake_filesystem_unittest
-import xmltodict
 
 
 @pytest.fixture(autouse=True)

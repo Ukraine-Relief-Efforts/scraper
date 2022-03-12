@@ -1,6 +1,8 @@
-import pytest
-from scrapers.poland import PolandScraper
 from unittest.mock import MagicMock
+
+import pytest
+
+from scrapers.poland import PolandScraper
 
 
 @pytest.fixture

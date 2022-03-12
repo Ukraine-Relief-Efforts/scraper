@@ -1,8 +1,8 @@
 import logging
 
 import requests
-
 import xmltodict
+
 from scrapers.base_scraper import BaseScraper
 from utils.constants import HEADERS
 from utils.dynamo import write_to_dynamo
