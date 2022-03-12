@@ -61,4 +61,4 @@ target-version = ["py310"]
 profile = "black"
 
 [tool.pytest.ini_options]
-addopts = "-n 4 -r a -v tests --timeout=10 --doctest-modules src"
+addopts = "-n 4 -r a -v tests --timeout=20 --doctest-modules src"
