@@ -1,4 +1,4 @@
-etup a basic development environment
+Setup a basic development environment
 
 Some contributors are new to setting up an environment, so I figured it would be a good time to write this.
 
