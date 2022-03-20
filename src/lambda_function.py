@@ -6,6 +6,7 @@ from scrapers.hungary_hu import HungaryScraper
 from scrapers.moldova_ro import MoldovaScraper
 from scrapers.poland import PolandScraper
 from scrapers.romaina_ro import RomaniaScraper
+from scrapers.slovakia_sk import SlovakiaScraper
 from utils.utils import DiscordLogData, LogLevelEnum, log_to_discord
 
 init_logging()
@@ -14,6 +15,7 @@ poland_scraper = PolandScraper()
 hungary_scraper = HungaryScraper()
 moldova_scraper = MoldovaScraper()
 romania_scraper = RomaniaScraper()
+slovakia_scraper = SlovakiaScraper()
 
 
 def lambda_handler(event, context):
@@ -39,6 +41,7 @@ def lambda_handler(event, context):
             hungary_scraper,
             moldova_scraper,
             romania_scraper,
+            slovakia_scraper,
         ]
         scraper_outcomes: list[tuple[str, str]] = []
 
