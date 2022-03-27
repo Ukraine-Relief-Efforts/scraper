@@ -24,11 +24,7 @@ def lambda_handler(event, context):
     if "country" in event:
         country = event["country"]
         if country == "poland-en":
-            poland_scraper.scrape_poland_en(event)
-        elif country == "poland-pl":
-            poland_scraper.scrape_poland_pl(event)
-        elif country == "poland-ua":
-            poland_scraper.scrape_poland_ua(event)
+            poland_scraper.scrape(event)
         elif country == "hungary-hu":
             hungary_scraper.scrape(event)
         elif country == "moldova-ro":
