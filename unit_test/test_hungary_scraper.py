@@ -54,7 +54,6 @@ def test_scrape(mrget, unwrap_item, web_data):
     assert reception.name == "MyName"
     assert reception.address == "MyName"
     assert not reception.qr == "MyName"
-    # TODO: is this correct?  It seems backward
     assert reception.lat == "2"
     assert reception.lon == "4"
 
