@@ -60,9 +60,12 @@ def check_common(put_item):
         ]
 
         for rec in reception:
-            # Will raise if not a float
-            _ = float(rec["lat"])
-            _ = float(rec["lon"])
+            lat, lon = rec["lat"], rec["lon"]
+            # Will raise if not a float (or None)
+            if lat is not None:
+                _ = float(lat)
+            if lon is not None:
+                _ = float(lon)
             assert rec["name"]
 
         names = {rec["name"] for rec in reception}
@@ -86,10 +89,10 @@ def check_common(put_item):
     return func
 
 
-def test_scrape_poland_pl(check_common):
+def test_scrape_poland_en(check_common):
     poland_scraper = PolandScraper()
-    poland_scraper.scrape_poland_pl()
-    check_common("poland-pl")
+    poland_scraper.scrape(locale="en")
+    check_common("poland-en")
 
 
 def test_scrape_romania_ro(check_common):

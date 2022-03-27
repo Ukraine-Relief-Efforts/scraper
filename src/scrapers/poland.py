@@ -1,141 +1,83 @@
 import logging
+import re
 
 from scrapers.base_scraper import BaseScraper
 from utils.dynamo import write_to_dynamo
+from utils.geo import address_to_coords
 from utils.reception import Reception
 from utils.utils import get_website_content, gmaps_url_to_lat_lon, normalize
 
-POLAND_PL_URL = "https://www.gov.pl/web/udsc/ukraina2"
-POLAND_PL_RECEPTION_URL = "https://www.gov.pl/web/udsc/punkty-recepcyjne2"
+POLAND_URL = "https://www.gov.pl/web/family/information-for-refugees-from-ukraine"
 
-# Keeping these ULRs around as a backup incase they are ever needed
-# POLAND_EN_URL = "https://www.gov.pl/web/udsc/ukraina-en"
-# POLAND_UA_URL = "https://www.gov.pl/web/udsc/ukraina---ua"
+# We use the content of header tags (h2, h3) to check the locale
+LOCALE_MAPPING = {
+    "en": "Information for refugees from Ukraine",
+    "ua": "Інформація для біженців з України",
+    "ru": "Информация для беженцев из Украины",
+}
+
+
+class LocaleNotFound(Exception):
+    """Error for a locale not found on the page."""
 
 
 class PolandScraper(BaseScraper):
-    def scrape(self, event=""):
-        self.scrape_poland_pl(event)
-        # self.scrape_poland_ua(event)
-        # self.scrape_poland_en(event)
+    def scrape(self, event="", locale="en"):
+        content = get_website_content(POLAND_URL)
 
-    def scrape_poland_pl(self, event=""):
-        logging.info("Scraping Poland (PL)")
-
-        """calls scrape_poland with the appropriate arguments for the pl website"""
-        self.scrape_poland(POLAND_PL_URL, "pl", event)
-
-    # def scrape_poland_ua(self, event=""):
-    #     logging.info("Scraping Poand (UA)")
-
-    #     """calls scrape_poland with the appropriate arguments for the ua website"""
-    #     self.scrape_poland(POLAND_UA_URL, "ua", event)
-
-    # def scrape_poland_en(self, event=""):
-    #     logging.info("Scraping Poland (EN)")
-
-    #     """calls scrape_poland with the appropriate arguments for the en website"""
-    #     self.scrape_poland(POLAND_EN_URL, "en", event)
-
-    def get_core(self, content, locale):
-        """Gets the content from a bullet points list of general information for Ukrainian citizens."""
-        items = content.find("div", class_="editor-content").findAll(
-            "span" if locale == "en" else "li"
+        general, rec_strings = self._extract_general_and_reception_strings(
+            content=content, locale=locale
         )
-        text_arr = []
-        for item in items:
-            if item.find(text="RECEPTION POINT ADDRESS"):
-                break
-            text_arr.append(normalize(item.get_text(strip=True, separator=" ")))
-        return text_arr
 
-    def scrape_poland(self, url, locale, event):
-        """Runs the scraping logic."""
-        content = get_website_content(url)
-        general = self.get_core(content, locale)
-        if locale in (
-            "pl",
-            "ua",
-        ):  # poland_ua doesn't seem to have a reception points URL, might change though. For now, grab the polish one and hope the translator doesn't mess up
-            reception_arr = self.get_reception_points_pl(
-                get_website_content(POLAND_PL_RECEPTION_URL)
-            )
-        elif locale == "en":
-            reception_arr = self.get_reception_points_en(content)
+        reception_points = [self._reception_from_str(s) for s in rec_strings]
 
         country = "poland-" + locale
-        write_to_dynamo(country, event, general, reception_arr, url)
+        write_to_dynamo(country, event, general, reception_points, POLAND_URL)
 
-    def get_reception_points_en(self, soup):
-        """Gets the list of reception points."""
-        items = (
-            soup.find("div", class_="editor-content")
-            .find("div")
-            .findChildren(recursive=False)
-        )
-        reception_list_start = False
-        recep_arr = []
-        count = 0
+    def _extract_general_and_reception_strings(self, content, locale):
+        alerts = content.select("div.alert.alert-info")
+        general = []
+        reception_strings = []
 
-        for item in items:
-            # start scraping for reception points after the title
-            if item.find(text="RECEPTION POINT ADDRESS"):
-                reception_list_start = True
-                continue
-            # stop scraping after "what's next?"
-            if item.find(text="What next?"):
-                break
-
-            if not reception_list_start:
+        for alert in alerts:
+            # Determine if we're looking at the right section for our locale
+            heading = alert.find_previous(["h2", "h3"])
+            heading_text = heading.string
+            if LOCALE_MAPPING[locale] != heading_text:
+                # Nope, keep searching
                 continue
 
-            count += 1
-            r = Reception()
-            r.address = r.name = normalize(item.get_text(strip=True, separator=" "))
-            gmaps = item.find("a", href=True)
+            # First - find general info
+            for tag in alert.find_all(["p", "li"]):
+                text = tag.string
+                # They format some paragraphs like numbered lists now for some
+                # reason, so remove that junk
+                text = re.sub(r"^\d+\.\s*", "", text).strip()
+                general.append(text)
 
-            if gmaps:
-                if "!3d" in gmaps["href"]:
-                    r.lat, r.lon = gmaps_url_to_lat_lon(gmaps["href"])
-                else:
-                    break
+            # Now look for reception points
+            for tag in alert.find_next_siblings():
+                class_ = tag.get("class")
+                if class_:
+                    if "alert" in class_:
+                        break
+                if tag.name == "p":
+                    reception_strings.append(tag.string.strip())
+            # We only need to do the one locale, so quit
+            break
+        else:
+            raise LocaleNotFound(locale)
 
-            img = item.find("img", src=True)
+        return (general, reception_strings)
 
-            # first item is special because the qr and address are in the same <p> tag
-            if count == 1:
-                if img:
-                    r.qr = img["src"]
-                recep_arr.append(r)
-                continue
+    def _reception_from_str(self, value):
+        result = Reception()
+        result.address = result.name = value.strip()
+        coords = address_to_coords(result.address)
+        if coords:
+            result.lat = coords[0]
+            result.lon = coords[1]
+        else:
+            result.lat = result.lon = None
 
-            # normal items: qr and address are in separate <p> tags
-            if count % 2 == 0:
-                recep_arr.append(r)
-            else:
-                # Get from the end of array,
-                img = item.find("img", src=True)
-                if img:
-                    recep_arr[-1].qr = img["src"]
-
-        return recep_arr
-
-    def get_reception_points_pl(self, soup):
-        """Gets the list of reception points."""
-        # TODO no QR codes
-        # TODO maybe this is not the best way of going about things. please double check, I'm tired
-        maindiv = soup.find("div", class_="editor-content")
-        recep_arr = []
-
-        for val in maindiv.find_all("a"):
-            recep = Reception()
-            recep.address = recep.name = normalize(
-                val.get_text(strip=True, separator=" ")
-            )
-            gmaps = val["href"]
-            if gmaps and "!3d" in gmaps:
-                recep.lat, recep.lon = gmaps_url_to_lat_lon(gmaps)
-            else:
-                continue  # TODO what to do when the lat/lon isn't in the URL?
-            recep_arr.append(recep)
-        return recep_arr
+        return result
