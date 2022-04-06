@@ -1,59 +1,93 @@
-import pytest
-from scrapers.poland import PolandScraper
 from unittest.mock import MagicMock
+
+import pytest
+
+from scrapers.poland import PolandScraper
 
 
 @pytest.fixture
-def main_data():
-    return """
+def web_data(mrget):
+    mrget().content = """
     <html>
-    <div class = "editor-content">
-        <li>This is general info.</li>
+
+    <h2>Some random locale heading</h2>
+
+    <div class="editor-content">
+
+        <div class="alert alert-info" role="alert">
+            <p>General decoy</p>
+        </div>
+
+        <h3>Information for refugees from Ukraine</h3>
+
+        <div class="alert alert-info" role="alert">
+            <p>1. First.</p>
+            <p>2. Second.</p>
+            <p>3. Third:</p>
+            <ul>
+                <li>fourth,</li>
+                <li>fifth,</li>
+                <li>sixth.</li>
+            </ul>
+        </div>
+
+        <div style="background:#eeeeee; border:1px solid #cccccc; padding:5px 10px">
+            <strong>BORDER CROSSING POINT |&nbsp;RECEPTION POINT ADDRESS</strong>
+        </div>
+
+        <ul>
+            <li><strong>Dorohusk-Jagodzin</strong></li>
+        </ul>
+
+        <p>
+            Suchodolski Palace Communal Culture and Tourism Center, ul. Parkowa 5, 22-175 Dorohusk - housing estate
+        </p>
+
+        <div class="alert alert-info" role="alert">
+            <p>
+                I am bad.
+            </p>
+        </div>
+
     </div>
     </html>
     """
 
 
-@pytest.fixture
-def reception_data(build_kml):
-    return """
-    <div class="editor-content">
-        <a href="https://www.google.pl/maps/place/Medyka+285,+37-732+Medyka/@77.7,77.7,17z/data=!3m1!4b1!4m5!3m4!1s0x473b7a1b8d10b8ef:0xfefb13192f90c961!8m2!3d42.1!4d42.2">MyName</a>
-    </div>
-    """
-
-
-@pytest.fixture
-def web_data(mrget, main_data, reception_data):
-    def side_effect(url, headers):
-        result = MagicMock(name="web_data")
-        if "ukraina2" in url:
-            result.content = main_data
-        else:
-            result.content = reception_data
-        return result
-
-    mrget.side_effect = side_effect
-
-
 def test_scrape(mrget, unwrap_item, web_data):
     scraper = PolandScraper()
-    scraper.scrape()
+    scraper.scrape(locale="en")
     result = unwrap_item()
     assert result
-    print(result)
-    assert result["country"] == "poland-pl"
-    assert result["general"] == ["This is general info."]
+    assert result["country"] == "poland-en"
+    general = result["general"]
+    assert len(general) == 6
+    assert general == [
+        "First.",
+        "Second.",
+        "Third:",
+        "fourth,",
+        "fifth,",
+        "sixth.",
+    ]
     assert result["source"]
 
     assert result["reception"]
     assert len(result["reception"]) == 1
     reception = result["reception"][0]
-    assert reception.name == "MyName"
-    assert reception.address == "MyName"
-    assert not reception.qr == "MyName"
-    assert reception.lat == "42.1"
-    assert reception.lon == "42.2"
+    assert (
+        reception.name
+        == "Suchodolski Palace Communal Culture and Tourism Center, ul. Parkowa 5, 22-175 Dorohusk - housing estate"
+    )
+    assert (
+        reception.address
+        == "Suchodolski Palace Communal Culture and Tourism Center, ul. Parkowa 5, 22-175 Dorohusk - housing estate"
+    )
+    assert not reception.qr
+
+    # I haven't mocked the geocoding
+    assert reception.lat is None
+    assert reception.lon is None
 
     assert result["isoFormat"]
     assert result["dateTime"]

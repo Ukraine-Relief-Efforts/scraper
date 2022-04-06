@@ -60,9 +60,12 @@ def check_common(put_item):
         ]
 
         for rec in reception:
-            # Will raise if not a float
-            _ = float(rec["lat"])
-            _ = float(rec["lon"])
+            lat, lon = rec["lat"], rec["lon"]
+            # Will raise if not a float (or None)
+            if lat is not None:
+                _ = float(lat)
+            if lon is not None:
+                _ = float(lon)
             assert rec["name"]
 
         names = {rec["name"] for rec in reception}
@@ -70,26 +73,26 @@ def check_common(put_item):
 
         # These are very low numbers, and if we're below this, something is
         # probably wrong
-        assert len(general) > 5
-        if country == "slovakia-sk":
-            # limitation of slovakia, there are only 4 checkpoints
-            assert len(reception) >= 4
-        else:
-            assert len(reception) > 5
-            assert len(names) > 5
-            # All these say 'WIP' right now
-            # Or not? Think I fixed that
-            assert len(addresses) > 5
+        minimum_size = 4
+        assert len(general) >= minimum_size
+        assert len(reception) >= minimum_size
+        assert len(names) >= minimum_size
+        assert len(addresses) >= minimum_size
+
+        for address in addresses:
+            assert address
+            # Just a vague check to make sure it's long enough to be an address
+            assert len(address) > 3
 
         return item, general, reception
 
     return func
 
 
-def test_scrape_poland_pl(check_common):
+def test_scrape_poland_en(check_common):
     poland_scraper = PolandScraper()
-    poland_scraper.scrape_poland_pl()
-    check_common("poland-pl")
+    poland_scraper.scrape(locale="en")
+    check_common("poland-en")
 
 
 def test_scrape_romania_ro(check_common):
