@@ -75,8 +75,8 @@ class PolandScraper(BaseScraper):
         result.address = result.name = value.strip()
         coords = address_to_coords(result.address)
         if coords:
-            result.lat = coords[0]
-            result.lon = coords[1]
+            result.lat = str(coords[0])
+            result.lon = str(coords[1])
         else:
             result.lat = result.lon = None
 
