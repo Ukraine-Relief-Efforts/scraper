@@ -5,7 +5,7 @@ import requests
 
 
 def _get_key_path():
-    return Path(__file__).parent / ".mapquest-key"
+    return Path(__file__).parent / ".geocod-io-key"
 
 
 def address_to_coords(address):
@@ -15,10 +15,10 @@ def address_to_coords(address):
     except FileNotFoundError:
         return None
     response = requests.get(
-        "http://open.mapquestapi.com/geocoding/v1/address",
-        params={"key": key, "location": address},
+        "https://api.geocod.io/v1.7/geocode",
+        params={"api_key": key, "q": address},
     )
     response.raise_for_status()
     data = response.json()
-    lat_lng = data["results"][0]["locations"][0]["latLng"]
+    lat_lng = data["results"][0]["location"]
     return (lat_lng["lat"], lat_lng["lng"])

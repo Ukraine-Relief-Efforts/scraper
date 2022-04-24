@@ -16,7 +16,7 @@ jobs:
     - run: pip install -r requirements.txt --target=dependencies/python
     - run: echo ${{ secrets.DISCORD_SCRAPER_LOG_WEBHOOK }} >> ./src/utils/.discord-webhook
     - run: echo ${{ secrets.SUMO_CODE }} >> ./src/utils/.sumo-code
-    - run: echo ${{ secrets.MAPQUEST_KEY }} >> ./src/utils/.mapquest-key
+    - run: echo ${{ secrets.GEOCOD_IO_KEY }} >> ./src/utils/.geocod-io-key
 
     - uses: aws-actions/setup-sam@v1
     - uses: aws-actions/configure-aws-credentials@v1
