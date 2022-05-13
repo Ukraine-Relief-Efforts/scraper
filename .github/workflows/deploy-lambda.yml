@@ -18,7 +18,7 @@ jobs:
     - run: echo ${{ secrets.SUMO_CODE }} >> ./src/utils/.sumo-code
     - run: echo ${{ secrets.GEOCOD_IO_KEY }} >> ./src/utils/.geocod-io-key
 
-    - uses: aws-actions/setup-sam@v1
+    - uses: aws-actions/setup-sam@v2
     - uses: aws-actions/configure-aws-credentials@v1
       with:
         aws-access-key-id: '${{ secrets.AWS_ACCESS_KEY_ID }}'
